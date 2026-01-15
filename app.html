@@ -544,8 +544,8 @@
           <i class="fas fa-user"></i>
         </div>
         <div class="user-details">
-          <h3 id="userName">Usuario</h3>
-          <p id="userRole">ING LUIS GERARDO HERRERA TUZ </p>
+          <h3 id="userName">Ing. Luis Gerardo Herrera Tuz</h3>
+          <p id="userRole">Administrador del Sistema</p>
         </div>
       </div>
       <button class="logout-btn" id="logoutBtn" data-tooltip="Cerrar sesión">
@@ -654,6 +654,30 @@
   // Script para botones flotantes y funcionalidades globales
   document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Sistema Vivero Chaka inicializado');
+
+    // Asegurar que el nombre del usuario se muestre correctamente
+    const userNameElement = document.getElementById('userName');
+    const userRoleElement = document.getElementById('userRole');
+    
+    // Prevenir que otros scripts cambien el nombre del usuario
+    Object.defineProperty(window, 'setUserName', {
+      value: function(name) {
+        // Ignorar cualquier intento de cambiar el nombre
+        if (userNameElement) {
+          userNameElement.textContent = 'Ing. Luis Gerardo Herrera Tuz';
+        }
+      },
+      writable: false
+    });
+    
+    // Asegurar que los valores sean correctos
+    if (userNameElement) {
+      userNameElement.textContent = 'Ing. Luis Gerardo Herrera Tuz';
+    }
+    
+    if (userRoleElement) {
+      userRoleElement.textContent = 'Administrador del Sistema';
+    }
 
     // Configurar fecha de última actualización
     const lastUpdate = document.getElementById('lastUpdate');
@@ -990,6 +1014,4 @@
   });
 </script>
 </body>
-
 </html>
-
