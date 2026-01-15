@@ -12,7 +12,7 @@ class QuotationManager {
     // Configuración automática
     this.defaultConditions = [
       "Condiciones de pago: 70% de anticipo y 30% inmediatos al finalizar el trabajo o la entrega del producto",
-      "Para la facturación: es necesario que envíe el CIF (cédula de identificación fiscal). En el caso del IVA por ser únicamente plantas, la tasa es cero (0)",
+      "Para la facturación: es necesario que envíe el CIF (cédula de identificación fiscal). En el caso del IVA por ser únicamente semillas, la tasa es cero (0)",
       "Cotización válida 10 días a partir de la fecha de emisión o notificar que es seguro el pedido",
       "Tiempo de entrega después del anticipo 5 días. (Programación)",
       "La existencia está sujeta a cambio sin previo aviso",
@@ -2050,4 +2050,5 @@ class QuotationManager {
 }
 
 // Exportar para el sistema principal
+
 window.QuotationManager = QuotationManager;
