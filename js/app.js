@@ -38,25 +38,6 @@ class AppSystem {
     }
   }
 
-  loadInitialSeeds() {
-    const seedData = [
-      {
-        id: 'SEM-1',
-        commonName: 'prueba',
-        scientificName: 'mensaje de prueba',
-        classification: 'recalcitrante',
-        availableMonths: 'Mar-Abr',
-        seedsPerKilo: 25000,
-        unitPrice: 1500.00,
-        stock: 25,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ];
-    localStorage.setItem('vivero_semillas', JSON.stringify(seedData));
-    console.log('✅ Semillas iniciales cargadas:', seedData.length);
-  }
-
   setupServiceWorker() {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -586,4 +567,5 @@ window.addEventListener('unhandledrejection', function(event) {
   if (window.app && window.app.showNotification) {
     window.app.showNotification('Error en operación asíncrona', 'error', 'Error del sistema');
   }
+
 });
