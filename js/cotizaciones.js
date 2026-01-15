@@ -12,7 +12,7 @@ class QuotationManager {
     // Configuración automática
     this.defaultConditions = [
       "Condiciones de pago: 70% de anticipo y 30% inmediatos al finalizar el trabajo o la entrega del producto",
-      "Para la facturación: es necesario que envíe el CIF (cédula de identificación fiscal). En el caso del IVA por ser únicamente semillas, la tasa es cero (0)",
+      "Para la facturación: es necesario que envíe el CIF (cédula de identificación fiscal). En el caso del IVA por ser únicamente plantas, la tasa es cero (0)",
       "Cotización válida 10 días a partir de la fecha de emisión o notificar que es seguro el pedido",
       "Tiempo de entrega después del anticipo 5 días. (Programación)",
       "La existencia está sujeta a cambio sin previo aviso",
@@ -35,7 +35,7 @@ class QuotationManager {
       email: "administracion@mexicoprimero.mx",
       fullAddress: "CALLE 39 No 92 Entre 22 y 24 C.P 97960 Tzucacab, Yucatán",
       logoPath: "logo.png",
-      esrLogoPath: "logo2.png"  // Cambiado a logo2.png
+      esrLogoPath: "logo2.png"
     };
 
     // Firmas
@@ -1016,8 +1016,8 @@ class QuotationManager {
               <tr class="product-row" data-id="${product.id}">
                 <td><strong>${product.commonName || product.name || 'Sin nombre'}</strong></td>
                 <td><em>${product.scientificName || ''}</em></td>
-                <td>$${(product.unitPrice || 0).toFixed(2)}</td>
-                <td>${(product.stock || 0).toFixed(2)}</td>
+                <td>$${this.formatNumberWithCommas(product.unitPrice || 0)}</td>
+                <td>${this.formatNumberWithCommas(product.stock || 0)}</td>
                 <td>
                   <button class="add-product-table-btn" data-id="${product.id}">
                     <i class="fas fa-plus"></i> Agregar
@@ -1152,7 +1152,7 @@ class QuotationManager {
         <div class="product-info">
           <h6>${item.commonName}</h6>
           <small><em>${item.scientificName}</em></small>
-          <small>Stock: ${item.stock} kg</small>
+          <small>Stock: ${this.formatNumberWithCommas(item.stock)} kg</small>
         </div>
         <div class="product-controls">
           <div class="quantity-controls">
@@ -1172,7 +1172,7 @@ class QuotationManager {
             </button>
           </div>
           <div style="font-weight: bold; color: #1b5e20;">
-            $${item.subtotal.toFixed(2)}
+            $${this.formatNumberWithCommas(item.subtotal.toFixed(2))}
           </div>
           <button class="btn-icon-sm remove-product" data-id="${item.id}" style="color: #f44336;">
             <i class="fas fa-trash"></i>
@@ -1199,7 +1199,7 @@ class QuotationManager {
         if (item && item.quantity < item.stock) {
           this.updateProductQuantity(productId, item.quantity + 1);
         } else {
-          window.app?.showNotification?.(`No hay suficiente stock para "${item.commonName}". Stock disponible: ${item.stock} kg`, 'warning');
+          window.app?.showNotification?.(`No hay suficiente stock para "${item.commonName}". Stock disponible: ${this.formatNumberWithCommas(item.stock)} kg`, 'warning');
         }
       });
     });
@@ -1217,18 +1217,12 @@ class QuotationManager {
         }
 
         if (newQuantity > item.stock) {
-          window.app?.showNotification?.(`No hay suficiente stock para "${item.commonName}". Stock disponible: ${item.stock} kg`, 'warning');
+          window.app?.showNotification?.(`No hay suficiente stock para "${item.commonName}". Stock disponible: ${this.formatNumberWithCommas(item.stock)} kg`, 'warning');
           e.target.value = item.quantity;
           return;
         }
 
         this.updateProductQuantity(productId, newQuantity);
-      });
-
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          e.target.blur();
-        }
       });
     });
 
@@ -1252,7 +1246,7 @@ class QuotationManager {
     document.getElementById('summaryClientName').textContent = clientName || '-';
     document.getElementById('summaryAddress').textContent = clientAddress || '-';
     document.getElementById('summaryDate').textContent = this.formatDateForDisplay(quoteDate);
-    document.getElementById('summaryShipping').textContent = `$${this.shippingCost.toFixed(2)}`;
+    document.getElementById('summaryShipping').textContent = `$${this.formatNumberWithCommas(this.shippingCost.toFixed(2))}`;
 
     if (quoteDate) {
       const validUntil = new Date(quoteDate);
@@ -1274,9 +1268,10 @@ class QuotationManager {
       <div class="product-summary-item">
         <div>
           <strong>${item.commonName}</strong>
-          <small>${item.quantity} kg × $${item.unitPrice.toFixed(2)}</small>
+          ${item.scientificName ? `<br><small><em>${item.scientificName}</em></small>` : ''}
+          <small>${this.formatNumberWithCommas(item.quantity)} kg × $${this.formatNumberWithCommas(item.unitPrice.toFixed(2))}</small>
         </div>
-        <strong>$${item.subtotal.toFixed(2)}</strong>
+        <strong>$${this.formatNumberWithCommas(item.subtotal.toFixed(2))}</strong>
       </div>
     `).join('');
 
@@ -1300,12 +1295,38 @@ class QuotationManager {
 
   updateTotalsDisplay() {
     const totals = this.calculateTotals();
-    document.getElementById('summarySubtotal').textContent = `$${totals.subtotal.toFixed(2)}`;
-    document.getElementById('summaryDiscount').textContent = `$${totals.discount.toFixed(2)}`;
+    document.getElementById('summarySubtotal').textContent = `$${this.formatNumberWithCommas(totals.subtotal.toFixed(2))}`;
+    document.getElementById('summaryDiscount').textContent = `$${this.formatNumberWithCommas(totals.discount.toFixed(2))}`;
     document.getElementById('summaryTaxLabel').textContent = `IVA (${this.taxRate}%):`;
-    document.getElementById('summaryTax').textContent = `$${totals.taxAmount.toFixed(2)}`;
-    document.getElementById('summaryShippingCost').textContent = `$${totals.shippingCost.toFixed(2)}`;
-    document.getElementById('summaryTotal').textContent = `$${totals.total.toFixed(2)}`;
+    document.getElementById('summaryTax').textContent = `$${this.formatNumberWithCommas(totals.taxAmount.toFixed(2))}`;
+    document.getElementById('summaryShippingCost').textContent = `$${this.formatNumberWithCommas(totals.shippingCost.toFixed(2))}`;
+    document.getElementById('summaryTotal').textContent = `$${this.formatNumberWithCommas(totals.total.toFixed(2))}`;
+  }
+
+  // Nuevo método: formatear números con comas
+  formatNumberWithCommas(number) {
+    // Si es un string que termina con .00, .50, etc, lo convertimos
+    if (typeof number === 'string') {
+      // Extraer la parte decimal si existe
+      const parts = number.split('.');
+      if (parts.length === 2) {
+        const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return `${integerPart}.${parts[1]}`;
+      }
+      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Si es un número
+    const num = typeof number === 'number' ? number : parseFloat(number);
+    if (isNaN(num)) return '0';
+
+    // Verificar si tiene decimales
+    const hasDecimals = num % 1 !== 0;
+    if (hasDecimals) {
+      return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   }
 
   // Métodos de ayuda
@@ -1445,7 +1466,7 @@ class QuotationManager {
     // Validar stock disponible
     for (const item of this.quoteItems) {
       if (item.quantity > item.stock) {
-        window.app?.showNotification?.(`Stock insuficiente para "${item.commonName}". Disponible: ${item.stock} kg, Solicitado: ${item.quantity} kg`, 'warning');
+        window.app?.showNotification?.(`Stock insuficiente para "${item.commonName}". Disponible: ${this.formatNumberWithCommas(item.stock)} kg, Solicitado: ${this.formatNumberWithCommas(item.quantity)} kg`, 'warning');
         return false;
       }
     }
@@ -1627,16 +1648,16 @@ class QuotationManager {
     const itemsHTML = quoteData.items?.map((item, index) => `
       <tr>
         <td>${index + 1}</td>
-        <td><strong>${item.commonName || 'Producto'}</strong><br>
-            <small><em>${item.scientificName || ''}</em></small></td>
+        <td><strong>${item.commonName || 'Producto'}</strong></td>
+        <td><em>${item.scientificName || '-'}</em></td>
         <td>${item.classification || 'Certificada'}</td>
         <td>${item.availableMonths || 'N/A'}</td>
-        <td>${item.seedsPerKilo?.toLocaleString() || '0'}</td>
-        <td>$${(item.unitPrice || 0).toFixed(2)}</td>
-        <td>${item.quantity || 1} kg</td>
-        <td><strong>$${(item.subtotal || 0).toFixed(2)}</strong></td>
+        <td>${item.seedsPerKilo ? this.formatNumberWithCommas(item.seedsPerKilo) : '0'}</td>
+        <td>$${this.formatNumberWithCommas((item.unitPrice || 0).toFixed(2))}</td>
+        <td>${this.formatNumberWithCommas(item.quantity || 1)} kg</td>
+        <td><strong>$${this.formatNumberWithCommas((item.subtotal || 0).toFixed(2))}</strong></td>
       </tr>
-    `).join('') || '<tr><td colspan="8" style="text-align: center; padding: 20px; color: #666;">No hay productos en la cotización</td></tr>';
+    `).join('') || '<tr><td colspan="9" style="text-align: center; padding: 20px; color: #666;">No hay productos en la cotización</td></tr>';
 
     const conditionsHTML = quoteData.conditions?.map((condition, index) => `
       <div class="print-condition-item">
@@ -1653,9 +1674,9 @@ class QuotationManager {
 
     let discountText = '';
     if (financial.discountType === 'fixed' && discountAmount > 0) {
-      discountText = `Descuento: $${discountAmount.toFixed(2)}`;
+      discountText = `Descuento: $${this.formatNumberWithCommas(discountAmount.toFixed(2))}`;
     } else if (financial.discountType === 'percentage' && discountAmount > 0) {
-      discountText = `Descuento (${financial.discountValue}%): $${discountAmount.toFixed(2)}`;
+      discountText = `Descuento (${financial.discountValue}%): $${this.formatNumberWithCommas(discountAmount.toFixed(2))}`;
     }
 
     return `
@@ -1684,7 +1705,7 @@ class QuotationManager {
               COTIZACIÓN No. ${quoteData.id}
             </div>
             <div class="print-date-section">
-              Mérida, Yucatán, a <span class="print-dynamic-field">${this.formatDate(quoteData.date)}</span>
+              ${this.formatDocumentDate(quoteData.date)}
             </div>
             <div class="print-cot-section">
               Válido hasta: <span class="print-dynamic-field">${this.formatDate(quoteData.validUntil)}</span>
@@ -1705,12 +1726,13 @@ class QuotationManager {
           <thead>
             <tr>
               <th>No.</th>
-              <th>Producto</th>
+              <th>Nombre Común</th>
+              <th>Nombre Científico</th>
               <th>Clasificación</th>
-              <th>Meses</th>
+              <th>Meses<br>disponible</th>
               <th>Semillas/kilo</th>
               <th>Precio/kilo</th>
-              <th>Cantidad (kg)</th>
+              <th>Cantidad<br>(kg)</th>
               <th>Subtotal</th>
             </tr>
           </thead>
@@ -1720,27 +1742,27 @@ class QuotationManager {
         <div class="print-summary">
           <div class="print-summary-item">
             <span>Subtotal:</span>
-            <span>$${subtotal.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(subtotal.toFixed(2))}</span>
           </div>
           ${discountText ? `
           <div class="print-summary-item">
             <span>${discountText.split(':')[0]}:</span>
-            <span>$${discountAmount.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(discountAmount.toFixed(2))}</span>
           </div>
           ` : ''}
           <div class="print-summary-item">
             <span>IVA (${financial.taxRate || 0}%):</span>
-            <span>$${taxAmount.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(taxAmount.toFixed(2))}</span>
           </div>
           ${this.shippingCost > 0 ? `
           <div class="print-summary-item">
             <span>Costo de Envío:</span>
-            <span>$${this.shippingCost.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(this.shippingCost.toFixed(2))}</span>
           </div>
           ` : ''}
           <div class="print-summary-item print-summary-total">
             <span>TOTAL:</span>
-            <span>$${total.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(total.toFixed(2))}</span>
           </div>
         </div>
 
@@ -1761,25 +1783,40 @@ class QuotationManager {
           </div>
         </div>
 
-        <!-- PIE DE PÁGINA CON LOGO ESR A LA DERECHA -->
+        <!-- PIE DE PÁGINA CON LOGO ESR A LA DERECHA - MODIFICADO -->
         <div class="print-footer">
-          <div class="footer-contact">
-            ${this.companyInfo.fullAddress}<br>
-            Whatsapp: ${this.companyInfo.phone} / email: ${this.companyInfo.email}
-          </div>
-          <div class="footer-copyright">
-            <div style="float: left; width: 70%;">
-              © ${new Date().getFullYear()} ${this.companyInfo.name} - Sistema de Gestión Integral v2.0<br>
-              Esta es una cotización generada electrónicamente
+          <div class="footer-content">
+            <div class="footer-contact">
+              ${this.companyInfo.fullAddress}<br>
+              Whatsapp: ${this.companyInfo.phone} / email: ${this.companyInfo.email}
             </div>
-            <div style="float: right; width: 30%; text-align: right;">
-              <img src="${this.companyInfo.esrLogoPath}" alt="Logo ESR" style="max-width: 120px; max-height: 100px; display: block; margin-left: auto;" onerror="this.style.display='none'">
+            <div class="footer-logo">
+              <img src="${this.companyInfo.esrLogoPath}" alt="Logo ESR" class="footer-esr-logo" onerror="this.style.display='none'">
             </div>
-            <div style="clear: both;"></div>
           </div>
         </div>
       </div>
     `;
+  }
+
+  // NUEVO MÉTODO: Formato de fecha para el documento
+  formatDocumentDate(dateString) {
+    if (!dateString) return 'Mérida, Yucatán, a [Fecha no especificada]';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Mérida, Yucatán, a [Fecha inválida]';
+
+      const day = date.getDate();
+      const month = date.toLocaleString('es-ES', { month: 'long' });
+      const year = date.getFullYear();
+
+      // Capitalizar primera letra del mes
+      const monthCapitalized = month.charAt(0).toUpperCase() + month.slice(1);
+
+      return `Mérida, Yucatán, a ${day} de ${monthCapitalized} de ${year}`;
+    } catch {
+      return 'Mérida, Yucatán, a [Error en fecha]';
+    }
   }
 
   formatDate(dateString) {
@@ -1905,7 +1942,7 @@ class QuotationManager {
         font-weight: bold;
       }
       
-      /* TABLA DE PRODUCTOS */
+      /* TABLA DE PRODUCTOS CON 9 COLUMNAS - MODIFICADO PARA SEPARAR NOMBRE COMÚN Y CIENTÍFICO */
       .print-products-table {
         width: 100%;
         border-collapse: collapse;
@@ -1920,16 +1957,45 @@ class QuotationManager {
         text-align: center;
         border: 1px solid #ddd;
         font-weight: bold;
+        font-size: 9px;
+        white-space: nowrap;
       }
       
       .print-products-table td {
         padding: 8px 5px;
         border: 1px solid #ddd;
         text-align: center;
+        font-size: 9px;
+        vertical-align: top;
       }
       
       .print-products-table tr:nth-child(even) {
         background-color: #f9f9f9;
+      }
+      
+      .print-products-table th:nth-child(1) { width: 4%; }  /* No. */
+      .print-products-table th:nth-child(2) { width: 15%; } /* Nombre Común */
+      .print-products-table th:nth-child(3) { width: 15%; } /* Nombre Científico */
+      .print-products-table th:nth-child(4) { width: 10%; } /* Clasificación */
+      .print-products-table th:nth-child(5) { width: 8%; }  /* Meses disponible */
+      .print-products-table th:nth-child(6) { width: 8%; }  /* Semillas/kilo */
+      .print-products-table th:nth-child(7) { width: 10%; } /* Precio/kilo */
+      .print-products-table th:nth-child(8) { width: 10%; } /* Cantidad (kg) */
+      .print-products-table th:nth-child(9) { width: 12%; } /* Subtotal */
+      
+      /* Ajuste para columnas con precios */
+      .print-products-table td:nth-child(5),
+      .print-products-table td:nth-child(6),
+      .print-products-table td:nth-child(7),
+      .print-products-table td:nth-child(8),
+      .print-products-table td:nth-child(9) {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+      }
+      
+      /* Estilo para nombres científicos en cursiva */
+      .print-products-table td:nth-child(3) {
+        font-style: italic;
       }
       
       /* RESUMEN */
@@ -1947,6 +2013,7 @@ class QuotationManager {
         justify-content: space-between;
         padding: 8px 0;
         border-bottom: 1px solid #dee2e6;
+        font-family: 'Courier New', monospace;
       }
       
       .print-summary-total {
@@ -2017,26 +2084,37 @@ class QuotationManager {
         margin-bottom: 2px;
       }
       
-      /* PIE DE PÁGINA */
+      /* PIE DE PÁGINA - MODIFICADO: TEXTO A LA IZQUIERDA, LOGO A LA DERECHA */
       .print-footer {
-        text-align: center;
         font-size: 10px;
         color: #555;
         border-top: 1px solid #ccc;
         padding-top: 15px;
         margin-top: 40px;
+        width: 100%;
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
       }
       
       .footer-contact {
-        margin-bottom: 10px;
+        flex: 1;
+        text-align: left;
+        line-height: 1.4;
       }
       
-      .footer-copyright {
-        color: #777;
-        overflow: hidden;
-        margin-top: 15px;
-        position: relative;
-        min-height: 100px;
+      .footer-logo {
+        text-align: right;
+      }
+      
+      .footer-esr-logo {
+        max-width: 120px;
+        max-height: 100px;
+        object-fit: contain;
       }
       
       @media print {
@@ -2044,11 +2122,24 @@ class QuotationManager {
         .print-container { box-shadow: none; padding: 15px; }
         .no-print { display: none !important; }
         @page { margin: 1.5cm; }
+        .footer-content {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+        }
+        .footer-contact {
+          text-align: left !important;
+        }
+        .footer-logo {
+          text-align: right !important;
+        }
+        .print-products-table {
+          font-size: 9px !important;
+        }
       }
     `;
   }
 }
 
 // Exportar para el sistema principal
-
 window.QuotationManager = QuotationManager;
