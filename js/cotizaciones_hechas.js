@@ -17,7 +17,9 @@ class QuotationHistoryManager {
       rfc: "RFC: MPR980510JT9",
       phone: "99-97-48-26-11",
       email: "administracion@mexicoprimero.mx",
-      fullAddress: "CALLE 39 No 92 Entre 22 y 24 C.P 97960 Tzucacab, Yucatán"
+      fullAddress: "CALLE 39 No 92 Entre 22 y 24 C.P 97960 Tzucacab, Yucatán",
+      logoPath: "logo.png",
+      esrLogoPath: "logo2.png"  // Logo de ESR a la derecha
     };
 
     // Firmas
@@ -1906,14 +1908,12 @@ class QuotationHistoryManager {
 
     return `
       <div class="print-container">
-        <!-- Encabezado con logo y datos de empresa -->
+        <!-- ENCABEZADO CENTRADO CON LOGO A LA IZQUIERDA -->
         <div class="print-header">
-          <div class="print-logo-section">
-            <div class="print-logo-placeholder">
-              <img src="logo.png" alt="Logo México Primero" style="max-width: 120px; max-height: 120px;" onerror="this.onerror=null; this.src='logo.jpg'; this.alt='Logo México Primero'">
-            </div>
+          <div class="print-logo-container">
+            <img src="${this.companyInfo.logoPath}" alt="Logo México Primero" class="print-logo" onerror="this.style.display='none'">
           </div>
-          <div class="print-company-info">
+          <div class="print-company-info" style="text-align: center;">
             <div class="print-company-name">${this.companyInfo.name}</div>
             <div class="print-company-line">${this.companyInfo.activities}</div>
             <div class="print-company-line">${this.companyInfo.address}</div>
@@ -1922,15 +1922,15 @@ class QuotationHistoryManager {
           </div>
         </div>
 
-        <!-- Información de la cotización -->
         <div class="print-quote-info">
           <div class="print-quote-header-row">
-            <div class="print-folio-section">COTIZACIÓN No. ${quote.id}</div>
             <div class="print-quote-title-section">COTIZACIÓN DE ${typeText[quote.type] || 'PRODUCTOS'}</div>
           </div>
           
           <div class="print-quote-details-row">
-            <div class="print-left-space"></div>
+            <div class="print-folio-section" style="color: #ff0000; font-size: 14px; font-weight: bold;">
+              COTIZACIÓN No. ${quote.id}
+            </div>
             <div class="print-date-section">
               Mérida, Yucatán, a <span class="print-dynamic-field">${this.formatDate(quote.date)}</span>
             </div>
@@ -1949,7 +1949,6 @@ class QuotationHistoryManager {
           </div>
         </div>
 
-        <!-- Tabla de productos -->
         <table class="print-products-table">
           <thead>
             <tr>
@@ -1966,7 +1965,6 @@ class QuotationHistoryManager {
           <tbody>${itemsHTML}</tbody>
         </table>
 
-        <!-- Resumen -->
         <div class="print-summary">
           <div class="print-summary-item">
             <span>Subtotal:</span>
@@ -1994,7 +1992,6 @@ class QuotationHistoryManager {
           </div>
         </div>
 
-        <!-- Condiciones -->
         ${conditionsHTML ? `
         <div class="print-conditions">
           <div class="print-conditions-title">CONDICIONES DE LA COTIZACIÓN:</div>
@@ -2002,7 +1999,6 @@ class QuotationHistoryManager {
         </div>
         ` : ''}
 
-        <!-- Firmas -->
         <div class="print-signatures">
           <div class="signature-section">
             <div class="print-signature-line"></div>
@@ -2013,15 +2009,21 @@ class QuotationHistoryManager {
           </div>
         </div>
 
-        <!-- Pie de página -->
+        <!-- PIE DE PÁGINA CON LOGO ESR A LA DERECHA -->
         <div class="print-footer">
           <div class="footer-contact">
             ${this.companyInfo.fullAddress}<br>
             Whatsapp: ${this.companyInfo.phone} / email: ${this.companyInfo.email}
           </div>
           <div class="footer-copyright">
-            © ${new Date().getFullYear()} ${this.companyInfo.name} - Sistema de Gestión Integral v2.0<br>
-            Esta es una cotización generada electrónicamente
+            <div style="float: left; width: 70%;">
+              © ${new Date().getFullYear()} ${this.companyInfo.name} - Sistema de Gestión Integral v2.0<br>
+              Esta es una cotización generada electrónicamente
+            </div>
+            <div style="float: right; width: 30%; text-align: right;">
+              <img src="${this.companyInfo.esrLogoPath}" alt="Logo ESR" style="max-width: 120px; max-height: 100px; display: block; margin-left: auto;" onerror="this.style.display='none'">
+            </div>
+            <div style="clear: both;"></div>
           </div>
         </div>
       </div>
@@ -2036,57 +2038,241 @@ class QuotationHistoryManager {
       
       .print-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
       
-      /* ENCABEZADO */
-      .print-header { display: flex; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #2e7d32; }
-      .print-logo-section { width: 120px; height: 120px; margin-right: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-      .print-logo-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-      .print-logo-placeholder img { max-width: 100%; max-height: 100%; object-fit: contain; }
-      .print-company-info { flex-grow: 1; text-align: left; }
-      .print-company-name { font-size: 16px; font-weight: bold; text-decoration: underline; color: #2e7d32; margin-bottom: 6px; text-transform: uppercase; }
-      .print-company-line { font-size: 11px; margin-bottom: 3px; color: #333; }
+      /* ENCABEZADO CON LOGO - CENTRADO */
+      .print-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #2e7d32;
+        position: relative;
+      }
       
-      /* INFORMACIÓN COTIZACIÓN */
-      .print-quote-info { margin-bottom: 25px; border-bottom: 1px solid #ccc; padding-bottom: 15px; }
-      .print-quote-header-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-      .print-folio-section { font-weight: bold; font-size: 13px; color: #2e7d32; }
-      .print-quote-title-section { flex-grow: 1; text-align: center; font-weight: bold; font-size: 13px; color: #2e7d32; }
-      .print-quote-details-row { display: flex; justify-content: space-between; margin-top: 8px; }
-      .print-left-space { flex: 1; }
-      .print-date-section { text-align: center; flex: 2; }
-      .print-cot-section { text-align: right; font-weight: bold; flex: 1; }
-      .print-client-info { font-size: 11px; margin-top: 15px; margin-bottom: 10px; padding: 10px; background: #f1f8e9; border-radius: 5px; }
-      .print-intro-text { font-style: italic; margin-bottom: 20px; text-align: justify; }
-      .print-dynamic-field { font-weight: bold; }
+      .print-logo-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
       
-      /* TABLA */
-      .print-products-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 10px; }
-      .print-products-table th { background-color: #2e7d32; color: white; padding: 8px 5px; text-align: center; border: 1px solid #ddd; font-weight: bold; }
-      .print-products-table td { padding: 8px 5px; border: 1px solid #ddd; text-align: center; }
-      .print-products-table tr:nth-child(even) { background-color: #f9f9f9; }
+      .print-logo {
+        max-width: 120px;
+        max-height: 120px;
+        object-fit: contain;
+      }
+      
+      .print-company-info {
+        flex: 1;
+        text-align: center;
+      }
+      
+      .print-company-name {
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: underline;
+        color: #2e7d32;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+      }
+      
+      .print-company-line {
+        font-size: 11px;
+        margin-bottom: 3px;
+        color: #333;
+      }
+      
+      .print-quote-info {
+        margin-bottom: 25px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 15px;
+      }
+      
+      .print-quote-header-row {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      
+      .print-quote-title-section {
+        font-weight: bold;
+        font-size: 14px;
+        color: #2e7d32;
+        text-transform: uppercase;
+      }
+      
+      .print-quote-details-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-size: 11px;
+      }
+      
+      .print-folio-section {
+        font-weight: bold;
+        color: #ff0000;
+        font-size: 14px;
+      }
+      
+      .print-date-section {
+        text-align: center;
+      }
+      
+      .print-cot-section {
+        text-align: right;
+        font-weight: bold;
+      }
+      
+      .print-client-info {
+        font-size: 11px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #f1f8e9;
+        border-radius: 5px;
+      }
+      
+      .print-intro-text {
+        font-style: italic;
+        margin-bottom: 20px;
+        text-align: justify;
+      }
+      
+      .print-dynamic-field {
+        font-weight: bold;
+      }
+      
+      /* TABLA DE PRODUCTOS */
+      .print-products-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+        font-size: 10px;
+      }
+      
+      .print-products-table th {
+        background-color: #2e7d32;
+        color: white;
+        padding: 8px 5px;
+        text-align: center;
+        border: 1px solid #ddd;
+        font-weight: bold;
+      }
+      
+      .print-products-table td {
+        padding: 8px 5px;
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+      
+      .print-products-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
       
       /* RESUMEN */
-      .print-summary { margin: 20px 0; padding: 15px; background: #f1f8e9; border-radius: 8px; max-width: 300px; margin-left: auto; }
-      .print-summary-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #dee2e6; }
-      .print-summary-total { font-weight: bold; font-size: 14px; color: #2e7d32; border-top: 2px solid #2e7d32; margin-top: 10px; padding-top: 10px; }
+      .print-summary {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f1f8e9;
+        border-radius: 8px;
+        max-width: 300px;
+        margin-left: auto;
+      }
+      
+      .print-summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #dee2e6;
+      }
+      
+      .print-summary-total {
+        font-weight: bold;
+        font-size: 14px;
+        color: #2e7d32;
+        border-top: 2px solid #2e7d32;
+        margin-top: 10px;
+        padding-top: 10px;
+      }
       
       /* CONDICIONES */
-      .print-conditions { margin-bottom: 30px; }
-      .print-conditions-title { font-size: 12px; font-weight: bold; margin-bottom: 10px; color: #2e7d32; text-align: center; }
-      .print-condition-item { margin-bottom: 5px; display: flex; }
-      .print-condition-number { font-weight: bold; margin-right: 10px; min-width: 20px; }
+      .print-conditions {
+        margin-bottom: 30px;
+      }
+      
+      .print-conditions-title {
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #2e7d32;
+        text-align: center;
+      }
+      
+      .print-condition-item {
+        margin-bottom: 5px;
+        display: flex;
+      }
+      
+      .print-condition-number {
+        font-weight: bold;
+        margin-right: 10px;
+        min-width: 20px;
+      }
       
       /* FIRMAS */
-      .print-signatures { margin-top: 50px; margin-bottom: 40px; display: flex; justify-content: center; }
-      .signature-section { text-align: center; width: 45%; }
-      .print-signature-line { width: 100%; border-top: 1px solid #333; margin: 30px auto 10px; }
-      .print-signature-name { font-weight: bold; margin-top: 5px; font-size: 11px; }
-      .signature-details { font-size: 10px; color: #555; margin-top: 5px; }
-      .signature-line { margin-bottom: 2px; }
+      .print-signatures {
+        margin-top: 50px;
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .signature-section {
+        text-align: center;
+        width: 45%;
+      }
+      
+      .print-signature-line {
+        width: 100%;
+        border-top: 1px solid #333;
+        margin: 30px auto 10px;
+      }
+      
+      .print-signature-name {
+        font-weight: bold;
+        margin-top: 5px;
+        font-size: 11px;
+      }
+      
+      .signature-details {
+        font-size: 10px;
+        color: #555;
+        margin-top: 5px;
+      }
+      
+      .signature-line {
+        margin-bottom: 2px;
+      }
       
       /* PIE DE PÁGINA */
-      .print-footer { text-align: center; font-size: 10px; color: #555; border-top: 1px solid #ccc; padding-top: 15px; margin-top: 40px; }
-      .footer-contact { margin-bottom: 10px; }
-      .footer-copyright { color: #777; }
+      .print-footer {
+        text-align: center;
+        font-size: 10px;
+        color: #555;
+        border-top: 1px solid #ccc;
+        padding-top: 15px;
+        margin-top: 40px;
+      }
+      
+      .footer-contact {
+        margin-bottom: 10px;
+      }
+      
+      .footer-copyright {
+        color: #777;
+        overflow: hidden;
+        margin-top: 15px;
+        position: relative;
+        min-height: 100px;
+      }
       
       @media print {
         body { padding: 0; }
