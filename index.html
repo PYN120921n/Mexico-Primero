@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivero Chaka | Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+      /* Reset y estilos base */
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Inter', sans-serif;
+          line-height: 1.6;
+          color: #333;
+          overflow-x: hidden;
+      }
+
+      /* Contenedor principal del login */
+      .login-container {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 2rem;
+          background: linear-gradient(135deg, #0c4b33 0%, #1a7d4f 50%, #2ecc71 100%);
+          background-image:
+                  radial-gradient(circle at 15% 50%, rgba(26, 188, 156, 0.2) 0%, transparent 50%),
+                  radial-gradient(circle at 85% 30%, rgba(46, 204, 113, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 50% 80%, rgba(39, 174, 96, 0.1) 0%, transparent 50%);
+          position: relative;
+          overflow: hidden;
+      }
+
+      /* Elementos decorativos */
+      .login-container::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231a7d4f' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+          opacity: 0.3;
+          z-index: 0;
+      }
+
+      /* Header con logo */
+      .login-header {
+          text-align: center;
+          margin-bottom: 3rem;
+          color: white;
+          animation: fadeInDown 0.8s ease-out;
+          position: relative;
+          z-index: 1;
+          max-width: 800px;
+      }
+
+      .login-header .logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 25px;
+          margin-bottom: 25px;
+          flex-wrap: wrap;
+      }
+
+      .login-header .logo img {
+          height: 90px;
+          width: 90px;
+          object-fit: contain;
+          filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.3));
+          animation: float 3s ease-in-out infinite;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.1);
+          padding: 10px;
+          backdrop-filter: blur(5px);
+      }
+
+      .logo-text {
+          text-align: left;
+      }
+
+      .login-header .logo h1 {
+          font-family: 'Poppins', sans-serif;
+          font-size: 3.2rem;
+          font-weight: 800;
+          background: linear-gradient(135deg, #ffffff, #e8f9f1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          margin-bottom: 5px;
+          letter-spacing: -0.5px;
+      }
+
+      .login-header .logo span {
+          color: #8effc1;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .login-header .subtitle {
+          font-size: 1.3rem;
+          opacity: 0.95;
+          max-width: 600px;
+          margin: 0 auto;
+          line-height: 1.7;
+          color: #e8f9f1;
+          font-weight: 300;
+          letter-spacing: 0.5px;
+      }
+
+      /* Información de la empresa */
+      .company-info {
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 15px;
+          padding: 20px 25px;
+          margin-top: 25px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          text-align: left;
+          animation: fadeIn 1s ease-out 0.3s both;
+      }
+
+      .company-info h3 {
+          font-family: 'Poppins', sans-serif;
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+
+      .company-info h3 i {
+          color: #8effc1;
+      }
+
+      .company-details {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+          font-size: 0.95rem;
+      }
+
+      .company-detail {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          color: #e8f9f1;
+      }
+
+      .company-detail i {
+          color: #8effc1;
+          font-size: 1rem;
+          margin-top: 3px;
+          flex-shrink: 0;
+      }
+
+      .company-detail strong {
+          color: #fff;
+          font-weight: 500;
+      }
+
+      /* Tarjeta de login */
+      .login-card {
+          background-color: rgba(255, 255, 255, 0.98);
+          border-radius: 24px;
+          box-shadow:
+                  0 20px 60px rgba(0, 0, 0, 0.2),
+                  0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+          width: 100%;
+          max-width: 520px;
+          padding: 3rem;
+          margin-bottom: 2rem;
+          position: relative;
+          overflow: hidden;
+          animation: slideUp 0.6s ease-out 0.2s both;
+          backdrop-filter: blur(10px);
+          z-index: 1;
+      }
+
+      .login-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 6px;
+          background: linear-gradient(90deg, #1a7d4f, #2ecc71, #8effc1);
+          border-radius: 24px 24px 0 0;
+      }
+
+      .card-header {
+          text-align: center;
+          margin-bottom: 2.8rem;
+      }
+
+      .card-header h2 {
+          font-family: 'Poppins', sans-serif;
+          font-size: 2.2rem;
+          font-weight: 700;
+          color: #0c4b33;
+          margin-bottom: 1rem;
+          position: relative;
+          display: inline-block;
+      }
+
+      .card-header h2::after {
+          content: '';
+          position: absolute;
+          bottom: -12px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 80px;
+          height: 4px;
+          background: linear-gradient(90deg, #1a7d4f, #2ecc71);
+          border-radius: 2px;
+      }
+
+      .card-header p {
+          color: #666;
+          font-size: 1.1rem;
+          margin-top: 20px;
+          line-height: 1.6;
+      }
+
+      /* Formulario */
+      .form-group {
+          margin-bottom: 2rem;
+          position: relative;
+      }
+
+      .form-group label {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 0.8rem;
+          font-weight: 600;
+          color: #333;
+          font-size: 1rem;
+          font-family: 'Poppins', sans-serif;
+      }
+
+      .form-group label i {
+          color: #1a7d4f;
+          font-size: 1.2rem;
+          width: 24px;
+          text-align: center;
+      }
+
+      .form-group input {
+          width: 100%;
+          padding: 18px 22px;
+          border: 2px solid #e0f2e9;
+          border-radius: 12px;
+          font-size: 1.05rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          background: #f8fffc;
+          font-family: 'Inter', sans-serif;
+          color: #333;
+      }
+
+      .form-group input::placeholder {
+          color: #90a4ae;
+      }
+
+      .form-group input:focus {
+          outline: none;
+          border-color: #2ecc71;
+          background: white;
+          box-shadow:
+                  0 0 0 4px rgba(46, 204, 113, 0.2),
+                  0 8px 24px rgba(46, 204, 113, 0.15);
+          transform: translateY(-2px);
+      }
+
+      .form-group input:valid:not(:focus):not(:placeholder-shown) {
+          border-color: #27ae60;
+          background-color: rgba(39, 174, 96, 0.05);
+      }
+
+      .password-wrapper {
+          position: relative;
+      }
+
+      .password-toggle {
+          position: absolute;
+          right: 18px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          color: #78909c;
+          background: none;
+          border: none;
+          padding: 10px;
+          border-radius: 8px;
+          transition: all 0.3s;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .password-toggle:hover {
+          background-color: rgba(46, 204, 113, 0.1);
+          color: #1a7d4f;
+          transform: translateY(-50%) scale(1.1);
+      }
+
+      .password-toggle i {
+          font-size: 1.2rem;
+      }
+
+      .password-strength {
+          margin-top: 12px;
+          height: 6px;
+          border-radius: 3px;
+          background-color: #e0f2e9;
+          overflow: hidden;
+          position: relative;
+          transition: all 0.3s;
+      }
+
+      .password-strength::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 0%;
+          transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 3px;
+      }
+
+      .strength-weak::after {
+          width: 33%;
+          background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+      }
+
+      .strength-medium::after {
+          width: 66%;
+          background: linear-gradient(90deg, #ffa726, #ffb74d);
+      }
+
+      .strength-strong::after {
+          width: 100%;
+          background: linear-gradient(90deg, #27ae60, #2ecc71);
+      }
+
+      .strength-text {
+          font-size: 0.85rem;
+          margin-top: 6px;
+          color: #78909c;
+          text-align: right;
+          transition: all 0.3s;
+          font-weight: 500;
+      }
+
+      .strength-weak + .strength-text { color: #ff6b6b; }
+      .strength-medium + .strength-text { color: #ffa726; }
+      .strength-strong + .strength-text { color: #27ae60; }
+
+      /* Botón de login */
+      .btn-login {
+          width: 100%;
+          padding: 20px;
+          background: linear-gradient(135deg, #1a7d4f 0%, #27ae60 50%, #2ecc71 100%);
+          color: white;
+          border: none;
+          border-radius: 12px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 15px;
+          margin: 2.5rem 0 2rem;
+          letter-spacing: 0.5px;
+          box-shadow:
+                  0 8px 30px rgba(26, 125, 79, 0.4),
+                  0 2px 4px rgba(0, 0, 0, 0.1);
+          position: relative;
+          overflow: hidden;
+          font-family: 'Poppins', sans-serif;
+          text-transform: uppercase;
+      }
+
+      .btn-login::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent);
+          transition: left 0.7s;
+      }
+
+      .btn-login:hover {
+          transform: translateY(-4px);
+          box-shadow:
+                  0 12px 40px rgba(26, 125, 79, 0.5),
+                  0 4px 8px rgba(0, 0, 0, 0.15);
+          background: linear-gradient(135deg, #0c4b33 0%, #1a7d4f 50%, #27ae60 100%);
+      }
+
+      .btn-login:hover::before {
+          left: 100%;
+      }
+
+      .btn-login:active {
+          transform: translateY(-2px);
+      }
+
+      .btn-login:disabled {
+          background: linear-gradient(135deg, #b0bec5, #cfd8dc);
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-login i {
+          font-size: 1.3rem;
+      }
+
+      /* Mensajes de error */
+      .error-message {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          background: linear-gradient(135deg, #ffebee, #ffcdd2);
+          color: #c62828;
+          padding: 18px 22px;
+          border-radius: 12px;
+          margin-bottom: 2rem;
+          font-size: 1rem;
+          border-left: 5px solid #f44336;
+          animation: shake 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 15px rgba(244, 67, 54, 0.15);
+      }
+
+      .error-message i {
+          font-size: 1.4rem;
+          flex-shrink: 0;
+      }
+
+      /* Notificaciones de seguridad */
+      .security-notice {
+          background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+          border-radius: 12px;
+          padding: 20px;
+          margin: 25px 0;
+          font-size: 0.95rem;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          border-left: 5px solid #27ae60;
+          box-shadow: 0 4px 15px rgba(39, 174, 96, 0.15);
+      }
+
+      .security-notice i {
+          color: #1a7d4f;
+          font-size: 1.5rem;
+          flex-shrink: 0;
+      }
+
+      .security-notice div {
+          flex: 1;
+      }
+
+      .security-notice strong {
+          display: block;
+          color: #0c4b33;
+          margin-bottom: 6px;
+          font-size: 1rem;
+          font-weight: 600;
+      }
+
+      .security-notice small {
+          color: #666;
+          font-size: 0.9rem;
+          line-height: 1.5;
+      }
+
+      .dev-mode {
+          background: linear-gradient(135deg, #fff3e0, #ffecb3);
+          border-left: 5px solid #ff9800;
+      }
+
+      .dev-mode i {
+          color: #ff9800;
+      }
+
+      /* Footer del login */
+      .login-footer {
+          text-align: center;
+          padding-top: 2.2rem;
+          border-top: 1px solid rgba(0, 0, 0, 0.08);
+          color: rgba(255, 255, 255, 0.95);
+          font-size: 0.95rem;
+          max-width: 520px;
+          animation: fadeIn 1s ease-out 0.4s both;
+          position: relative;
+          z-index: 1;
+          line-height: 1.6;
+      }
+
+      .login-footer p {
+          margin: 8px 0;
+      }
+
+      .version {
+          margin-top: 10px;
+          font-size: 0.85rem;
+          opacity: 0.8;
+          color: rgba(255, 255, 255, 0.8);
+          font-weight: 300;
+      }
+
+      /* Animaciones */
+      @keyframes fadeInDown {
+          from {
+              opacity: 0;
+              transform: translateY(-40px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @keyframes slideUp {
+          from {
+              opacity: 0;
+              transform: translateY(60px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
+
+      @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+      }
+
+      @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+          20%, 40%, 60%, 80% { transform: translateX(8px); }
+      }
+
+      @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+      }
+
+      @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+          .login-container {
+              padding: 1.5rem;
+          }
+
+          .login-card {
+              padding: 2.5rem 2rem;
+              max-width: 90%;
+          }
+
+          .login-header .logo h1 {
+              font-size: 2.5rem;
+          }
+
+          .login-header .logo img {
+              height: 70px;
+              width: 70px;
+          }
+
+          .card-header h2 {
+              font-size: 1.9rem;
+          }
+
+          .company-details {
+              grid-template-columns: 1fr;
+          }
+      }
+
+      @media (max-width: 480px) {
+          .login-container {
+              padding: 1rem;
+          }
+
+          .login-card {
+              padding: 2rem 1.5rem;
+          }
+
+          .login-header .logo {
+              flex-direction: column;
+              text-align: center;
+              gap: 15px;
+          }
+
+          .login-header .logo img {
+              margin-bottom: 0;
+          }
+
+          .logo-text {
+              text-align: center;
+          }
+
+          .form-group input {
+              padding: 16px 18px;
+          }
+
+          .btn-login {
+              padding: 18px;
+          }
+
+          .company-info {
+              padding: 15px;
+          }
+
+          .company-detail {
+              font-size: 0.9rem;
+          }
+      }
+
+      /* Soporte para modo oscuro */
+      @media (prefers-color-scheme: dark) {
+          .login-card {
+              background-color: #1e2d2a;
+              color: #ffffff;
+          }
+
+          .card-header h2 {
+              color: #ffffff;
+          }
+
+          .card-header p {
+              color: #b3b3b3;
+          }
+
+          .form-group label {
+              color: #e0e0e0;
+          }
+
+          .form-group input {
+              background: #2a3d37;
+              border-color: #3a5a4f;
+              color: #ffffff;
+          }
+
+          .form-group input::placeholder {
+              color: #90a4ae;
+          }
+
+          .form-group input:focus {
+              background: #2a3d37;
+              box-shadow:
+                      0 0 0 4px rgba(46, 204, 113, 0.3),
+                      0 8px 24px rgba(0, 0, 0, 0.4);
+          }
+
+          .password-toggle {
+              color: #90a4ae;
+          }
+
+          .security-notice {
+              background: linear-gradient(135deg, #1e3a2f, #2a4d3f);
+              color: #e0e0e0;
+          }
+
+          .dev-mode {
+              background: linear-gradient(135deg, #3d2e1e, #4d3e2f);
+          }
+
+          .login-footer {
+              border-top: 1px solid rgba(255, 255, 255, 0.1);
+          }
+      }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <div class="logo">
+      <img src="logo.png" alt="Vivero Chaka"
+           onerror="this.onerror=null; this.src='logo.jpg'; this.alt='Logo Vivero Chaka'">
+      <div class="logo-text">
+        <h1>Vivero <span>Chaka</span></h1>
+        <p class="subtitle">Sistema de Gestión Integral - Control de Producción y Ventas</p>
+      </div>
+    </div>
+
+    <!-- Información de la empresa -->
+    <div class="company-info">
+      <h3><i class="fas fa-building"></i> MEXICO PRIMERO S DE S.S</h3>
+      <div class="company-details">
+        <div class="company-detail">
+          <i class="fas fa-industry"></i>
+          <div><strong>Ganadería, Agricultura y Reforestación</strong></div>
+        </div>
+        <div class="company-detail">
+          <i class="fas fa-map-marker-alt"></i>
+          <div><strong>Domicilio:</strong> Conocido Tzucacab, Yucatán</div>
+        </div>
+        <div class="company-detail">
+          <i class="fas fa-id-card"></i>
+          <div><strong>RFC:</strong> MPR980510JT9</div>
+        </div>
+        <div class="company-detail">
+          <i class="fas fa-phone"></i>
+          <div><strong>Teléfono:</strong> 99-97-48-26-11</div>
+        </div>
+        <div class="company-detail">
+          <i class="fas fa-envelope"></i>
+          <div><strong>Email:</strong> administracion@mexicoprimero.mx</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login-card">
+    <div class="card-header">
+      <h2>Acceso al Sistema</h2>
+      <p>Ingresa tus credenciales para acceder al panel de gestión y control</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">
+          <i class="fas fa-envelope"></i> Correo Electrónico
+        </label>
+        <input type="email" id="email" placeholder="usuario@viverochaka.com" required
+               autocomplete="username" spellcheck="false" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="password">
+          <i class="fas fa-lock"></i> Contraseña
+        </label>
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Ingresa tu contraseña" required
+                 autocomplete="current-password" spellcheck="false">
+          <button type="button" class="password-toggle" id="togglePassword">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="password-strength" id="passwordStrength"></div>
+        <div class="strength-text" id="strengthText"></div>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginButton">
+        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>© 2026 Vivero Chaka - MEXICO PRIMERO S DE S.S</p>
+      <p>Sistema de Gestión Integral para Ganadería, Agricultura y Reforestación</p>
+      <p class="version">Versión 2.0.0 | Para soporte técnico contacta al administrador</p>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/auth.js"></script>
+<script>
+  // Protección básica del lado del cliente
+  (function() {
+    // Solo en producción
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // Deshabilitar algunas funciones de depuración
+      if (window.console) {
+        const originalLog = console.log;
+        console.log = function(...args) {
+          // Permitir solo logs no sensibles
+          if (!args.some(arg =>
+            typeof arg === 'string' &&
+            (arg.includes('password') || arg.includes('token') || arg.includes('auth'))
+          )) {
+            originalLog.apply(console, args);
+          }
+        };
+      }
+
+      // Prevenir copia de credenciales
+      document.addEventListener('copy', function(e) {
+        const selection = window.getSelection().toString();
+        if (selection.includes('@') && selection.includes('.')) {
+          e.preventDefault();
+          showToast('⚠️ La información de acceso no se puede copiar', 'warning');
+        }
+      });
+
+      // Mostrar toast
+      function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        toast.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: ${type === 'warning' ? '#ff9800' : '#4CAF50'};
+          color: white;
+          padding: 12px 20px;
+          border-radius: 8px;
+          z-index: 10000;
+          animation: slideIn 0.3s ease;
+          font-family: 'Inter', sans-serif;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
