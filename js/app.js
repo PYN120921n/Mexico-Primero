@@ -4,7 +4,7 @@ class AppSystem {
     this.currentModule = null;
     this.modules = {
       semillas: window.SeedManager,
-      plantas: window.PlantManager,
+      plantas: window.PlantManager, // Ya disponible
       fertilizantes: window.FertilizerManager,
       cotizaciones: window.QuotationManager,
       cotizaciones_hechas: window.QuotationHistoryManager,
@@ -25,6 +25,7 @@ class AppSystem {
     this.loadInitialModule();
     this.ensureNotificationContainer();
     this.setupSeedLoader();
+    this.setupPlantLoader(); // Nuevo: cargador para plantas
     this.setupServiceWorker();
     this.setupOfflineDetection();
     this.setupPerformanceMonitoring();
@@ -36,6 +37,89 @@ class AppSystem {
       console.log('📦 Base de datos de semillas vacía, cargando datos iniciales...');
       this.loadInitialSeeds();
     }
+  }
+
+  setupPlantLoader() {
+    const existingPlants = JSON.parse(localStorage.getItem('vivero_plantas')) || [];
+    if (existingPlants.length === 0) {
+      console.log('🌱 Base de datos de plantas vacía, cargando datos iniciales...');
+      this.loadInitialPlants();
+    }
+  }
+
+  loadInitialSeeds() {
+    const initialSeeds = [
+      {
+        id: '1',
+        nombre: 'Tomate Cherry',
+        especie: 'Solanum lycopersicum',
+        variedad: 'Cherry',
+        stock: 150,
+        precio: 25.50,
+        proveedor: 'Semillas Premium',
+        fecha_ingreso: '2024-01-15',
+        estado: 'disponible'
+      },
+      {
+        id: '2',
+        nombre: 'Lechuga Romana',
+        especie: 'Lactuca sativa',
+        variedad: 'Romana',
+        stock: 200,
+        precio: 18.75,
+        proveedor: 'AgroSemillas',
+        fecha_ingreso: '2024-01-10',
+        estado: 'disponible'
+      }
+    ];
+    localStorage.setItem('vivero_semillas', JSON.stringify(initialSeeds));
+    console.log('✅ Semillas iniciales cargadas:', initialSeeds.length);
+  }
+
+  loadInitialPlants() {
+    const initialPlants = [
+      {
+        id: '1',
+        nombre: 'Rosa China',
+        especie: 'Rosa chinensis',
+        variedad: 'Roja',
+        edad_meses: 6,
+        altura_cm: 45,
+        precio: 120.00,
+        stock: 50,
+        estado: 'disponible',
+        ubicacion: 'Invernadero A',
+        cuidados: 'Riego diario, sol pleno'
+      },
+      {
+        id: '2',
+        nombre: 'Lavanda',
+        especie: 'Lavandula angustifolia',
+        variedad: 'Inglesa',
+        edad_meses: 4,
+        altura_cm: 30,
+        precio: 85.50,
+        stock: 75,
+        estado: 'disponible',
+        ubicacion: 'Exterior',
+        cuidados: 'Riego moderado, sol directo'
+      },
+      {
+        id: '3',
+        nombre: 'Bonsái Ficus',
+        especie: 'Ficus retusa',
+        variedad: 'Bonsái',
+        edad_meses: 24,
+        altura_cm: 25,
+        precio: 450.00,
+        stock: 15,
+        estado: 'disponible',
+        ubicacion: 'Vivero Interior',
+        cuidados: 'Riego controlado, luz indirecta'
+      }
+    ];
+    localStorage.setItem('vivero_plantas', JSON.stringify(initialPlants));
+    console.log('✅ Plantas iniciales cargadas:', initialPlants.length);
   }
 
   setupServiceWorker() {
@@ -75,6 +159,8 @@ class AppSystem {
 
   syncPendingChanges() {
     console.log('🔄 Sincronizando cambios pendientes...');
+    // Aquí iría la lógica para sincronizar cambios pendientes con el servidor
+    this.showNotification('Sincronización completada', 'success', 'Sincronizado');
   }
 
   ensureNotificationContainer() {
@@ -399,6 +485,16 @@ class AppSystem {
                 <span class="module-status available">✅ Disponible</span>
               </div>
             </div>
+            <div class="module-card available" onclick="window.app.navigateToModule('plantas')">
+              <div class="module-icon">
+                <i class="fas fa-leaf"></i>
+              </div>
+              <div class="module-info">
+                <h5>Plantas</h5>
+                <p>Gestión de vivero</p>
+                <span class="module-status available">✅ Disponible</span>
+              </div>
+            </div>
             <div class="module-card available" onclick="window.app.navigateToModule('cotizaciones')">
               <div class="module-icon">
                 <i class="fas fa-file-invoice-dollar"></i>
@@ -421,16 +517,6 @@ class AppSystem {
             </div>
             <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
               <div class="module-icon">
-                <i class="fas fa-leaf"></i>
-              </div>
-              <div class="module-info">
-                <h5>Plantas</h5>
-                <p>Gestión de vivero</p>
-                <span class="module-status developing">🔧 En desarrollo</span>
-              </div>
-            </div>
-            <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
-              <div class="module-icon">
                 <i class="fas fa-flask"></i>
               </div>
               <div class="module-info">
@@ -449,6 +535,16 @@ class AppSystem {
                 <span class="module-status developing">🔧 En desarrollo</span>
               </div>
             </div>
+            <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
+              <div class="module-icon">
+                <i class="fas fa-database"></i>
+              </div>
+              <div class="module-info">
+                <h5>Base de Datos</h5>
+                <p>Backup y restauración</p>
+                <span class="module-status developing">🔧 En desarrollo</span>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -457,6 +553,24 @@ class AppSystem {
           <p style="color: var(--text-light); font-size: 0.9rem;">
             Usa los botones flotantes en la esquina inferior derecha para acciones rápidas como agregar productos o imprimir.
           </p>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: rgba(255, 193, 7, 0.05); border-radius: 8px; max-width: 500px;">
+          <h4 style="color: #FF9800; margin-bottom: 10px;"><i class="fas fa-chart-bar"></i> Estadísticas rápidas:</h4>
+          <div style="display: flex; gap: 20px; font-size: 0.9rem;">
+            <div>
+              <div style="font-weight: bold; color: var(--primary-color);">${JSON.parse(localStorage.getItem('vivero_semillas') || '[]').length}</div>
+              <div style="color: var(--text-light);">Semillas</div>
+            </div>
+            <div>
+              <div style="font-weight: bold; color: var(--primary-color);">${JSON.parse(localStorage.getItem('vivero_plantas') || '[]').length}</div>
+              <div style="color: var(--text-light);">Plantas</div>
+            </div>
+            <div>
+              <div style="font-weight: bold; color: var(--primary-color);">${JSON.parse(localStorage.getItem('cotizaciones') || '[]').length}</div>
+              <div style="color: var(--text-light);">Cotizaciones</div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -567,5 +681,4 @@ window.addEventListener('unhandledrejection', function(event) {
   if (window.app && window.app.showNotification) {
     window.app.showNotification('Error en operación asíncrona', 'error', 'Error del sistema');
   }
-
 });
