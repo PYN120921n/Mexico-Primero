@@ -1975,13 +1975,13 @@ class QuotationManager {
       
       .print-products-table th:nth-child(1) { width: 4%; }  /* No. */
       .print-products-table th:nth-child(2) { width: 15%; } /* Nombre Común */
-      .print-products-table th:nth-child(3) { width: 15%; } /* Nombre Científico */
+      .print-products-table th:nth-child(3) { width: 17%; } /* Nombre Científico */
       .print-products-table th:nth-child(4) { width: 10%; } /* Clasificación */
-      .print-products-table th:nth-child(5) { width: 8%; }  /* Meses disponible */
-      .print-products-table th:nth-child(6) { width: 8%; }  /* Semillas/kilo */
-      .print-products-table th:nth-child(7) { width: 10%; } /* Precio/kilo */
-      .print-products-table th:nth-child(8) { width: 10%; } /* Cantidad (kg) */
-      .print-products-table th:nth-child(9) { width: 12%; } /* Subtotal */
+      .print-products-table th:nth-child(5) { width: 14%; }  /* Meses disponible */
+      .print-products-table th:nth-child(6) { width: 6%; }  /* Semillas/kilo */
+      .print-products-table th:nth-child(7) { width: 8%; } /* Precio/kilo */
+      .print-products-table th:nth-child(8) { width: 8%; } /* Cantidad (kg) */
+      .print-products-table th:nth-child(9) { width: 10%; } /* Subtotal */
       
       /* Ajuste para columnas con precios */
       .print-products-table td:nth-child(5),
@@ -2143,3 +2143,4 @@ class QuotationManager {
 
 // Exportar para el sistema principal
 window.QuotationManager = QuotationManager;
+
