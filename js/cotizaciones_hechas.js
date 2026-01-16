@@ -1,4 +1,4 @@
-// Módulo de Cotizaciones Guardadas optimizado
+// Módulo de Cotizaciones Guardadas optimizado - Formato Unificado con cotizaciones.js
 class QuotationHistoryManager {
   constructor() {
     this.quotations = JSON.parse(localStorage.getItem('mexicoprimero_cotizaciones')) || [];
@@ -9,7 +9,7 @@ class QuotationHistoryManager {
     this.activeModal = null;
     this.searchTimeout = null;
 
-    // Datos de la empresa (consistente con cotizaciones.js)
+    // Datos de la empresa (CONSISTENTE CON cotizaciones.js)
     this.companyInfo = {
       name: "MEXICO PRIMERO S DE S.S",
       activities: "GANADERIA, AGRICULTURA Y REFORESTACIÓN",
@@ -19,15 +19,25 @@ class QuotationHistoryManager {
       email: "administracion@mexicoprimero.mx",
       fullAddress: "CALLE 39 No 92 Entre 22 y 24 C.P 97960 Tzucacab, Yucatán",
       logoPath: "logo.png",
-      esrLogoPath: "logo2.png"  // Logo de ESR a la derecha
+      esrLogoPath: "logo2.png"
     };
 
-    // Firmas
+    // Firmas (CONSISTENTE CON cotizaciones.js)
     this.signatures = [
       "P.A ING LUIS GERARDO HERRERA TUZ",
       "CONSULTOR AMBIENTAL",
       "PROF. ALBERTO CASANOVA MARTIN",
       "DIRECTOR Y APODERADO LEGAL DE 'MEXICO PRIMERO S DE S.S'"
+    ];
+
+    // Configuración de condiciones por defecto (CONSISTENTE)
+    this.defaultConditions = [
+      "Condiciones de pago: 70% de anticipo y 30% inmediatos al finalizar el trabajo o la entrega del producto",
+      "Para la facturación: es necesario que envíe el CIF (cédula de identificación fiscal). En el caso del IVA por ser únicamente plantas, la tasa es cero (0)",
+      "Cotización válida 10 días a partir de la fecha de emisión o notificar que es seguro el pedido",
+      "Tiempo de entrega después del anticipo 5 días. (Programación)",
+      "La existencia está sujeta a cambio sin previo aviso",
+      `Precios vigentes ${new Date().getFullYear()}`
     ];
   }
 
@@ -456,50 +466,6 @@ class QuotationHistoryManager {
           transform: none;
           box-shadow: none;
         }
-
-        /* Estilos para botones con mejor contraste */
-        .action-btn i {
-          color: white !important;
-          filter: brightness(0) invert(1);
-        }
-
-        .btn-secondary i {
-          color: #2e7d32 !important;
-        }
-
-        .btn-primary i,
-        .btn-success i,
-        .btn-danger i,
-        .btn-info i,
-        .btn-warning i {
-          color: white !important;
-        }
-
-        /* Botón de editar específico */
-        .btn-warning {
-          background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%) !important;
-          color: white !important;
-        }
-
-        .btn-warning:hover {
-          background: linear-gradient(135deg, #f57c00 0%, #e65100 100%) !important;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
-        }
-
-        /* Mejorar contraste en botones del modal */
-        .modal-footer button i {
-          color: white !important;
-        }
-
-        .modal-footer .btn-secondary i {
-          color: #2e7d32 !important;
-        }
-
-        /* Botones de acción en tabla con mejor contraste */
-        .action-btn i {
-          color: white !important;
-        }
       </style>
     `;
 
@@ -527,7 +493,6 @@ class QuotationHistoryManager {
 
   destroy() {
     console.log('🧹 Limpiando módulo de Historial');
-    // Limpiar modales activos
     if (this.activeModal && document.body.contains(this.activeModal)) {
       document.body.removeChild(this.activeModal);
       this.activeModal = null;
@@ -589,7 +554,6 @@ class QuotationHistoryManager {
 
   unbindEvents() {
     // Esta función se puede usar para limpiar eventos específicos si es necesario
-    // Actualmente no hay eventos persistentes que necesiten limpieza manual
   }
 
   refreshData() {
@@ -770,7 +734,7 @@ class QuotationHistoryManager {
         </td>
         <td style="padding: 12px;">
           <div class="amount-cell">
-            <strong style="color: #2e7d32; font-size: 14px;">$${(quote.financial?.total || quote.subtotal || 0).toFixed(2)}</strong>
+            <strong style="color: #2e7d32; font-size: 14px;">$${this.formatNumberWithCommas((quote.financial?.total || quote.subtotal || 0).toFixed(2))}</strong>
             ${quote.status === 'aprobada' ? '<small class="text-success"><i class="fas fa-check"></i> Pagado</small>' : ''}
           </div>
         </td>
@@ -878,7 +842,7 @@ class QuotationHistoryManager {
     document.getElementById('totalQuotes').textContent = total;
     document.getElementById('pendingQuotes').textContent = pending;
     document.getElementById('approvedQuotes').textContent = approved;
-    document.getElementById('totalRevenue').textContent = `$${revenue.toFixed(2)}`;
+    document.getElementById('totalRevenue').textContent = `$${this.formatNumberWithCommas(revenue.toFixed(2))}`;
   }
 
   renderPagination() {
@@ -972,7 +936,7 @@ class QuotationHistoryManager {
       });
 
       selectedCountText.textContent = `${selectedCount} cotización(es) seleccionada(s)`;
-      selectedTotalText.textContent = `Total: $${total.toFixed(2)}`;
+      selectedTotalText.textContent = `Total: $${this.formatNumberWithCommas(total.toFixed(2))}`;
       summary.style.display = 'block';
 
       // Mostrar botón de confirmación masiva si hay seleccionadas pendientes
@@ -1179,8 +1143,8 @@ class QuotationHistoryManager {
                         <small><em>${item.scientificName || ''}</em></small>
                       </td>
                       <td style="padding: 10px; text-align: center; border: 1px solid #e0e0e0;">${item.quantity} kg</td>
-                      <td style="padding: 10px; text-align: right; border: 1px solid #e0e0e0;">$${item.unitPrice?.toFixed(2) || '0.00'}</td>
-                      <td style="padding: 10px; text-align: right; border: 1px solid #e0e0e0;">$${item.subtotal?.toFixed(2) || '0.00'}</td>
+                      <td style="padding: 10px; text-align: right; border: 1px solid #e0e0e0;">$${this.formatNumberWithCommas(item.unitPrice?.toFixed(2) || '0.00')}</td>
+                      <td style="padding: 10px; text-align: right; border: 1px solid #e0e0e0;">$${this.formatNumberWithCommas(item.subtotal?.toFixed(2) || '0.00')}</td>
                     </tr>
                   `).join('') || '<tr><td colspan="5" style="padding: 20px; text-align: center; color: #666;">No hay productos</td></tr>'}
                 </tbody>
@@ -1194,33 +1158,33 @@ class QuotationHistoryManager {
             <div style="max-width: 300px; margin-left: auto;">
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #c8e6c9;">
                 <span>Subtotal:</span>
-                <strong>$${financial.subtotal?.toFixed(2) || '0.00'}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.subtotal?.toFixed(2) || '0.00')}</strong>
               </div>
               ${financial.discountType === 'fixed' && financial.discountAmount > 0 ? `
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #c8e6c9;">
                 <span>Descuento:</span>
-                <strong>$${financial.discountAmount.toFixed(2)}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.discountAmount.toFixed(2))}</strong>
               </div>
               ` : ''}
               ${financial.discountType === 'percentage' && financial.discountAmount > 0 ? `
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #c8e6c9;">
                 <span>Descuento (${financial.discountValue}%):</span>
-                <strong>$${financial.discountAmount.toFixed(2)}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.discountAmount.toFixed(2))}</strong>
               </div>
               ` : ''}
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #c8e6c9;">
                 <span>IVA (${financial.taxRate || 0}%):</span>
-                <strong>$${financial.taxAmount?.toFixed(2) || '0.00'}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.taxAmount?.toFixed(2) || '0.00')}</strong>
               </div>
               ${financial.shippingCost > 0 ? `
               <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #c8e6c9;">
                 <span>Costo de Envío:</span>
-                <strong>$${financial.shippingCost.toFixed(2)}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.shippingCost.toFixed(2))}</strong>
               </div>
               ` : ''}
               <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid #2e7d32; margin-top: 8px; font-size: 16px; color: #2e7d32;">
                 <span><strong>TOTAL:</strong></span>
-                <strong>$${financial.total?.toFixed(2) || '0.00'}</strong>
+                <strong>$${this.formatNumberWithCommas(financial.total?.toFixed(2) || '0.00')}</strong>
               </div>
             </div>
           </div>
@@ -1242,27 +1206,27 @@ class QuotationHistoryManager {
         </div>
         <div class="modal-footer" style="background: #f8f9fa; padding: 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #e0e0e0;">
           <button class="btn-secondary" id="closeViewModal" style="background: white; color: #2e7d32; border: 2px solid #c8e6c9; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-times" style="color: #2e7d32;"></i> Cerrar
+            <i class="fas fa-times"></i> Cerrar
           </button>
           
           <!-- Botón de editar -->
           <button class="btn-warning edit-quote-btn" data-id="${quote.id}" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-edit" style="color: white;"></i> Editar
+            <i class="fas fa-edit"></i> Editar
           </button>
           
           <button class="btn-primary print-quote-btn" data-id="${quote.id}" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-print" style="color: white;"></i> Imprimir
+            <i class="fas fa-print"></i> Imprimir
           </button>
           ${quote.status === 'pendiente' ? `
           <button class="btn-success confirm-quote-btn" data-id="${quote.id}" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-check" style="color: white;"></i> Confirmar
+            <i class="fas fa-check"></i> Confirmar
           </button>
           <button class="btn-danger cancel-quote-btn" data-id="${quote.id}" style="background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-times" style="color: white;"></i> Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
           ` : ''}
           <button class="btn-info duplicate-quote-btn" data-id="${quote.id}" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-copy" style="color: white;"></i> Duplicar
+            <i class="fas fa-copy"></i> Duplicar
           </button>
         </div>
       </div>
@@ -1326,12 +1290,6 @@ class QuotationHistoryManager {
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
         }
-        
-        .btn-warning:hover {
-          background: linear-gradient(135deg, #f57c00 0%, #e65100 100%) !important;
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
-        }
       </style>
     `;
 
@@ -1385,15 +1343,6 @@ class QuotationHistoryManager {
       }
     });
 
-    // Prevenir cierre múltiple
-    let isClosing = false;
-    const originalCloseModal = this.closeModal.bind(this);
-    this.closeModal = (modalElement) => {
-      if (isClosing) return;
-      isClosing = true;
-      originalCloseModal(modalElement);
-    };
-
     return modal;
   }
 
@@ -1402,12 +1351,6 @@ class QuotationHistoryManager {
 
     modal.classList.remove('show');
     modal.style.opacity = '0';
-
-    // Limpiar evento de cierre para evitar múltiples llamadas
-    const closeListeners = modal.querySelectorAll('.modal-close, #closeViewModal');
-    closeListeners.forEach(el => {
-      el.replaceWith(el.cloneNode(true));
-    });
 
     setTimeout(() => {
       if (modal.parentNode) {
@@ -1463,7 +1406,7 @@ class QuotationHistoryManager {
       <div class="modal-content" style="background: white; border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
         <div class="modal-header" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
           <h3 style="margin: 0; font-size: 20px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-edit" style="color: white;"></i> Editar Cotización ${quote.id}
+            <i class="fas fa-edit"></i> Editar Cotización ${quote.id}
           </h3>
           <button class="modal-close" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; padding: 0; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
             &times;
@@ -1521,23 +1464,23 @@ class QuotationHistoryManager {
             <div style="display: grid; gap: 10px;">
               <div style="display: flex; justify-content: space-between;">
                 <span>Subtotal:</span>
-                <strong id="editSubtotal">$${(financial.subtotal || 0).toFixed(2)}</strong>
+                <strong id="editSubtotal">$${this.formatNumberWithCommas((financial.subtotal || 0).toFixed(2))}</strong>
               </div>
               <div style="display: flex; justify-content: space-between;">
                 <span>Descuento:</span>
-                <strong id="editDiscountAmount">$${(financial.discountAmount || 0).toFixed(2)}</strong>
+                <strong id="editDiscountAmount">$${this.formatNumberWithCommas((financial.discountAmount || 0).toFixed(2))}</strong>
               </div>
               <div style="display: flex; justify-content: space-between;">
                 <span>IVA:</span>
-                <strong id="editTaxAmount">$${(financial.taxAmount || 0).toFixed(2)}</strong>
+                <strong id="editTaxAmount">$${this.formatNumberWithCommas((financial.taxAmount || 0).toFixed(2))}</strong>
               </div>
               <div style="display: flex; justify-content: space-between;">
                 <span>Envío:</span>
-                <strong id="editShippingDisplay">$${(financial.shippingCost || 0).toFixed(2)}</strong>
+                <strong id="editShippingDisplay">$${this.formatNumberWithCommas((financial.shippingCost || 0).toFixed(2))}</strong>
               </div>
               <div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 2px solid #2e7d32;">
                 <span><strong>TOTAL:</strong></span>
-                <strong style="color: #2e7d32; font-size: 16px;" id="editTotal">$${(financial.total || 0).toFixed(2)}</strong>
+                <strong style="color: #2e7d32; font-size: 16px;" id="editTotal">$${this.formatNumberWithCommas((financial.total || 0).toFixed(2))}</strong>
               </div>
             </div>
           </div>
@@ -1545,10 +1488,10 @@ class QuotationHistoryManager {
         
         <div class="modal-footer" style="background: #f8f9fa; padding: 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #e0e0e0;">
           <button class="btn-secondary" id="cancelEdit" style="background: white; color: #2e7d32; border: 2px solid #c8e6c9; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-times" style="color: #2e7d32;"></i> Cancelar
+            <i class="fas fa-times"></i> Cancelar
           </button>
           <button class="btn-primary" id="saveEdit" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-save" style="color: white;"></i> Guardar Cambios
+            <i class="fas fa-save"></i> Guardar Cambios
           </button>
         </div>
       </div>
@@ -1573,10 +1516,10 @@ class QuotationHistoryManager {
       const taxAmount = taxableAmount * (taxRate / 100);
       const total = taxableAmount + taxAmount + shippingCost;
 
-      modal.querySelector('#editDiscountAmount').textContent = `$${discountAmount.toFixed(2)}`;
-      modal.querySelector('#editTaxAmount').textContent = `$${taxAmount.toFixed(2)}`;
-      modal.querySelector('#editShippingDisplay').textContent = `$${shippingCost.toFixed(2)}`;
-      modal.querySelector('#editTotal').textContent = `$${total.toFixed(2)}`;
+      modal.querySelector('#editDiscountAmount').textContent = `$${this.formatNumberWithCommas(discountAmount.toFixed(2))}`;
+      modal.querySelector('#editTaxAmount').textContent = `$${this.formatNumberWithCommas(taxAmount.toFixed(2))}`;
+      modal.querySelector('#editShippingDisplay').textContent = `$${this.formatNumberWithCommas(shippingCost.toFixed(2))}`;
+      modal.querySelector('#editTotal').textContent = `$${this.formatNumberWithCommas(total.toFixed(2))}`;
     };
 
     // Listeners para actualizar cálculos
@@ -1728,15 +1671,20 @@ class QuotationHistoryManager {
 
   duplicateQuotation(quote) {
     if (confirm(`¿Duplicar la cotización ${quote.id}?\n\nSe creará una nueva cotización con los mismos datos.`)) {
-      // Crear copia de la cotización
+      // Obtener el último número de cotización y sumar 1
+      const lastQuoteNumber = this.getLastQuoteNumber();
+      const newQuoteNumber = lastQuoteNumber + 1;
+
+      // Crear copia de la cotización con nuevo número
       const newQuote = {
         ...JSON.parse(JSON.stringify(quote)), // Deep clone
-        id: `MP-${this.getNextQuoteNumber()}`,
+        id: this.formatQuoteNumber(newQuoteNumber), // Usar el mismo formato que cotizaciones.js
         date: new Date().toISOString().split('T')[0],
         createdAt: new Date().toISOString(),
         status: 'pendiente',
         validityDays: 10,
-        validUntil: this.calculateValidUntil(new Date().toISOString().split('T')[0], 10)
+        validUntil: this.calculateValidUntil(new Date().toISOString().split('T')[0], 10),
+        notes: 'De la manera más atenta y respetuosa pongo a consideración la siguiente cotización:'
       };
 
       // Agregar a la lista
@@ -1750,18 +1698,27 @@ class QuotationHistoryManager {
     }
   }
 
-  getNextQuoteNumber() {
+  // NUEVO MÉTODO: Obtener el último número de cotización (consistente con cotizaciones.js)
+  getLastQuoteNumber() {
+    if (this.quotations.length === 0) return 0;
     let maxNumber = 0;
     this.quotations.forEach(quote => {
       if (quote.id) {
-        const match = quote.id.match(/MP-(\d+)/);
+        const match = quote.id.match(/^(\d{3})\/\d{4}$/);
         if (match) {
           const num = parseInt(match[1]);
           if (num > maxNumber) maxNumber = num;
         }
       }
     });
-    return maxNumber + 1;
+    return maxNumber;
+  }
+
+  // NUEVO MÉTODO: Formatear número de cotización (consistente con cotizaciones.js)
+  formatQuoteNumber(number) {
+    const paddedNumber = number.toString().padStart(3, '0');
+    const currentYear = new Date().getFullYear();
+    return `${paddedNumber}/${currentYear}`;
   }
 
   calculateValidUntil(dateString, days) {
@@ -1819,15 +1776,12 @@ class QuotationHistoryManager {
           updatedProducts[productIndex].stock = newStock;
           updatedProducts[productIndex].updatedAt = new Date().toISOString();
           stockUpdated = true;
-
-          console.log(`📦 Stock actualizado: ${product.commonName} - ${product.stock}kg → ${newStock}kg`);
         }
       }
     });
 
     if (stockUpdated) {
       localStorage.setItem('vivero_semillas', JSON.stringify(updatedProducts));
-      console.log('✅ Stock actualizado correctamente');
     }
   }
 
@@ -1837,30 +1791,21 @@ class QuotationHistoryManager {
 
     printWindow.document.write(`
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cotización ${quote.id} - ${this.companyInfo.name}</title>
-  <style>
-    ${this.getPrintStyles()}
-  </style>
+  <style>${this.getPrintStyles()}</style>
 </head>
 <body>
   ${printContent}
   <script>
-    window.onload = function() {
-      setTimeout(function() {
-        window.print();
-        setTimeout(function() {
-          window.close();
-        }, 100);
-      }, 500);
-    };
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => window.close(), 100);
+    }, 500);
   </script>
 </body>
 </html>`);
-
     printWindow.document.close();
   }
 
@@ -1874,18 +1819,18 @@ class QuotationHistoryManager {
     const itemsHTML = quote.items?.map((item, index) => `
       <tr>
         <td>${index + 1}</td>
-        <td><strong>${item.commonName || 'Producto'}</strong><br>
-            <small><em>${item.scientificName || ''}</em></small></td>
+        <td><strong>${item.commonName || 'Producto'}</strong></td>
+        <td><em>${item.scientificName || '-'}</em></td>
         <td>${item.classification || 'Certificada'}</td>
         <td>${item.availableMonths || 'N/A'}</td>
-        <td>${item.seedsPerKilo?.toLocaleString() || '0'}</td>
-        <td>$${(item.unitPrice || 0).toFixed(2)}</td>
-        <td>${item.quantity || 1} kg</td>
-        <td><strong>$${(item.subtotal || 0).toFixed(2)}</strong></td>
+        <td>${item.seedsPerKilo ? this.formatNumberWithCommas(item.seedsPerKilo) : '0'}</td>
+        <td>$${this.formatNumberWithCommas((item.unitPrice || 0).toFixed(2))}</td>
+        <td>${this.formatNumberWithCommas(item.quantity || 1)} kg</td>
+        <td><strong>$${this.formatNumberWithCommas((item.subtotal || 0).toFixed(2))}</strong></td>
       </tr>
-    `).join('') || '<tr><td colspan="8" style="text-align: center; padding: 20px; color: #666;">No hay productos en la cotización</td></tr>';
+    `).join('') || '<tr><td colspan="9" style="text-align: center; padding: 20px; color: #666;">No hay productos en la cotización</td></tr>';
 
-    const conditionsHTML = quote.conditions?.map((condition, index) => `
+    const conditionsHTML = (quote.conditions || this.defaultConditions)?.map((condition, index) => `
       <div class="print-condition-item">
         <div class="print-condition-number">${index + 1}</div>
         <div>${condition}</div>
@@ -1901,9 +1846,9 @@ class QuotationHistoryManager {
 
     let discountText = '';
     if (financial.discountType === 'fixed' && discountAmount > 0) {
-      discountText = `Descuento: $${discountAmount.toFixed(2)}`;
+      discountText = `Descuento: $${this.formatNumberWithCommas(discountAmount.toFixed(2))}`;
     } else if (financial.discountType === 'percentage' && discountAmount > 0) {
-      discountText = `Descuento (${financial.discountValue}%): $${discountAmount.toFixed(2)}`;
+      discountText = `Descuento (${financial.discountValue}%): $${this.formatNumberWithCommas(discountAmount.toFixed(2))}`;
     }
 
     return `
@@ -1932,7 +1877,7 @@ class QuotationHistoryManager {
               COTIZACIÓN No. ${quote.id}
             </div>
             <div class="print-date-section">
-              Mérida, Yucatán, a <span class="print-dynamic-field">${this.formatDate(quote.date)}</span>
+              ${this.formatDocumentDate(quote.date)}
             </div>
             <div class="print-cot-section">
               Válido hasta: <span class="print-dynamic-field">${this.formatDate(quote.validUntil)}</span>
@@ -1953,12 +1898,13 @@ class QuotationHistoryManager {
           <thead>
             <tr>
               <th>No.</th>
-              <th>Producto</th>
+              <th>Nombre Común</th>
+              <th>Nombre Científico</th>
               <th>Clasificación</th>
-              <th>Meses</th>
+              <th>Meses<br>disponible</th>
               <th>Semillas/kilo</th>
               <th>Precio/kilo</th>
-              <th>Cantidad (kg)</th>
+              <th>Cantidad<br>(kg)</th>
               <th>Subtotal</th>
             </tr>
           </thead>
@@ -1968,27 +1914,27 @@ class QuotationHistoryManager {
         <div class="print-summary">
           <div class="print-summary-item">
             <span>Subtotal:</span>
-            <span>$${subtotal.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(subtotal.toFixed(2))}</span>
           </div>
           ${discountText ? `
           <div class="print-summary-item">
             <span>${discountText.split(':')[0]}:</span>
-            <span>$${discountAmount.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(discountAmount.toFixed(2))}</span>
           </div>
           ` : ''}
           <div class="print-summary-item">
             <span>IVA (${financial.taxRate || 0}%):</span>
-            <span>$${taxAmount.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(taxAmount.toFixed(2))}</span>
           </div>
           ${shippingCost > 0 ? `
           <div class="print-summary-item">
             <span>Costo de Envío:</span>
-            <span>$${shippingCost.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(shippingCost.toFixed(2))}</span>
           </div>
           ` : ''}
           <div class="print-summary-item print-summary-total">
             <span>TOTAL:</span>
-            <span>$${total.toFixed(2)}</span>
+            <span>$${this.formatNumberWithCommas(total.toFixed(2))}</span>
           </div>
         </div>
 
@@ -2009,25 +1955,79 @@ class QuotationHistoryManager {
           </div>
         </div>
 
-        <!-- PIE DE PÁGINA CON LOGO ESR A LA DERECHA -->
+        <!-- PIE DE PÁGINA CON LOGO ESR A LA DERECHA - MODIFICADO -->
         <div class="print-footer">
-          <div class="footer-contact">
-            ${this.companyInfo.fullAddress}<br>
-            Whatsapp: ${this.companyInfo.phone} / email: ${this.companyInfo.email}
-          </div>
-          <div class="footer-copyright">
-            <div style="float: left; width: 70%;">
-              © ${new Date().getFullYear()} ${this.companyInfo.name} - Sistema de Gestión Integral v2.0<br>
-              Esta es una cotización generada electrónicamente
+          <div class="footer-content">
+            <div class="footer-contact">
+              ${this.companyInfo.fullAddress}<br>
+              Whatsapp: ${this.companyInfo.phone} / email: ${this.companyInfo.email}
             </div>
-            <div style="float: right; width: 30%; text-align: right;">
-              <img src="${this.companyInfo.esrLogoPath}" alt="Logo ESR" style="max-width: 120px; max-height: 100px; display: block; margin-left: auto;" onerror="this.style.display='none'">
+            <div class="footer-logo">
+              <img src="${this.companyInfo.esrLogoPath}" alt="Logo ESR" class="footer-esr-logo" onerror="this.style.display='none'">
             </div>
-            <div style="clear: both;"></div>
           </div>
         </div>
       </div>
     `;
+  }
+
+  // NUEVO MÉTODO: Formato de fecha para el documento (consistente con cotizaciones.js)
+  formatDocumentDate(dateString) {
+    if (!dateString) return 'Mérida, Yucatán, a [Fecha no especificada]';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Mérida, Yucatán, a [Fecha inválida]';
+
+      const day = date.getDate();
+      const month = date.toLocaleString('es-ES', { month: 'long' });
+      const year = date.getFullYear();
+
+      // Capitalizar primera letra del mes
+      const monthCapitalized = month.charAt(0).toUpperCase() + month.slice(1);
+
+      return `Mérida, Yucatán, a ${day} de ${monthCapitalized} de ${year}`;
+    } catch {
+      return 'Mérida, Yucatán, a [Error en fecha]';
+    }
+  }
+
+  formatDate(dateString) {
+    if (!dateString) return '[Fecha no especificada]';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '[Fecha inválida]';
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      const formattedDate = date.toLocaleDateString('es-ES', options);
+      return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+    } catch {
+      return '[Error en fecha]';
+    }
+  }
+
+  // NUEVO MÉTODO: Formatear números con comas (consistente con cotizaciones.js)
+  formatNumberWithCommas(number) {
+    // Si es un string que termina con .00, .50, etc, lo convertimos
+    if (typeof number === 'string') {
+      // Extraer la parte decimal si existe
+      const parts = number.split('.');
+      if (parts.length === 2) {
+        const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return `${integerPart}.${parts[1]}`;
+      }
+      return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Si es un número
+    const num = typeof number === 'number' ? number : parseFloat(number);
+    if (isNaN(num)) return '0';
+
+    // Verificar si tiene decimales
+    const hasDecimals = num % 1 !== 0;
+    if (hasDecimals) {
+      return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
   }
 
   getPrintStyles() {
@@ -2140,7 +2140,7 @@ class QuotationHistoryManager {
         font-weight: bold;
       }
       
-      /* TABLA DE PRODUCTOS */
+      /* TABLA DE PRODUCTOS CON 9 COLUMNAS - MODIFICADO PARA SEPARAR NOMBRE COMÚN Y CIENTÍFICO */
       .print-products-table {
         width: 100%;
         border-collapse: collapse;
@@ -2155,16 +2155,45 @@ class QuotationHistoryManager {
         text-align: center;
         border: 1px solid #ddd;
         font-weight: bold;
+        font-size: 9px;
+        white-space: nowrap;
       }
       
       .print-products-table td {
         padding: 8px 5px;
         border: 1px solid #ddd;
         text-align: center;
+        font-size: 9px;
+        vertical-align: top;
       }
       
       .print-products-table tr:nth-child(even) {
         background-color: #f9f9f9;
+      }
+      
+      .print-products-table th:nth-child(1) { width: 4%; }  /* No. */
+      .print-products-table th:nth-child(2) { width: 15%; } /* Nombre Común */
+      .print-products-table th:nth-child(3) { width: 17%; } /* Nombre Científico */
+      .print-products-table th:nth-child(4) { width: 10%; } /* Clasificación */
+      .print-products-table th:nth-child(5) { width: 14%; }  /* Meses disponible */
+      .print-products-table th:nth-child(6) { width: 6%; }  /* Semillas/kilo */
+      .print-products-table th:nth-child(7) { width: 8%; } /* Precio/kilo */
+      .print-products-table th:nth-child(8) { width: 8%; } /* Cantidad (kg) */
+      .print-products-table th:nth-child(9) { width: 10%; } /* Subtotal */
+      
+      /* Ajuste para columnas con precios */
+      .print-products-table td:nth-child(5),
+      .print-products-table td:nth-child(6),
+      .print-products-table td:nth-child(7),
+      .print-products-table td:nth-child(8),
+      .print-products-table td:nth-child(9) {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+      }
+      
+      /* Estilo para nombres científicos en cursiva */
+      .print-products-table td:nth-child(3) {
+        font-style: italic;
       }
       
       /* RESUMEN */
@@ -2182,6 +2211,7 @@ class QuotationHistoryManager {
         justify-content: space-between;
         padding: 8px 0;
         border-bottom: 1px solid #dee2e6;
+        font-family: 'Courier New', monospace;
       }
       
       .print-summary-total {
@@ -2252,26 +2282,37 @@ class QuotationHistoryManager {
         margin-bottom: 2px;
       }
       
-      /* PIE DE PÁGINA */
+      /* PIE DE PÁGINA - MODIFICADO: TEXTO A LA IZQUIERDA, LOGO A LA DERECHA */
       .print-footer {
-        text-align: center;
         font-size: 10px;
         color: #555;
         border-top: 1px solid #ccc;
         padding-top: 15px;
         margin-top: 40px;
+        width: 100%;
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
       }
       
       .footer-contact {
-        margin-bottom: 10px;
+        flex: 1;
+        text-align: left;
+        line-height: 1.4;
       }
       
-      .footer-copyright {
-        color: #777;
-        overflow: hidden;
-        margin-top: 15px;
-        position: relative;
-        min-height: 100px;
+      .footer-logo {
+        text-align: right;
+      }
+      
+      .footer-esr-logo {
+        max-width: 120px;
+        max-height: 100px;
+        object-fit: contain;
       }
       
       @media print {
@@ -2279,21 +2320,22 @@ class QuotationHistoryManager {
         .print-container { box-shadow: none; padding: 15px; }
         .no-print { display: none !important; }
         @page { margin: 1.5cm; }
+        .footer-content {
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center !important;
+        }
+        .footer-contact {
+          text-align: left !important;
+        }
+        .footer-logo {
+          text-align: right !important;
+        }
+        .print-products-table {
+          font-size: 9px !important;
+        }
       }
     `;
-  }
-
-  formatDate(dateString) {
-    if (!dateString) return '[Fecha no especificada]';
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return '[Fecha inválida]';
-      const options = { day: 'numeric', month: 'long', year: 'numeric' };
-      const formattedDate = date.toLocaleDateString('es-ES', options);
-      return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-    } catch {
-      return '[Error en fecha]';
-    }
   }
 
   deleteQuotation(quote) {
@@ -2318,8 +2360,8 @@ class QuotationHistoryManager {
       'Válido hasta': quote.validUntil,
       Tipo: this.getTypeText(quote.type),
       'Productos': quote.items?.length || 0,
-      Subtotal: `$${quote.financial?.subtotal?.toFixed(2) || '0.00'}`,
-      Total: `$${quote.financial?.total?.toFixed(2) || '0.00'}`,
+      Subtotal: `$${this.formatNumberWithCommas(quote.financial?.subtotal?.toFixed(2) || '0.00')}`,
+      Total: `$${this.formatNumberWithCommas(quote.financial?.total?.toFixed(2) || '0.00')}`,
       Estado: this.getStatusText(quote.status),
       'Fecha creación': this.formatDateTime(quote.createdAt)
     }));
@@ -2333,7 +2375,7 @@ class QuotationHistoryManager {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `cotizaciones_vivero_chaka_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `cotizaciones_mexico_primero_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
