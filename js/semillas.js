@@ -2203,7 +2203,7 @@ class SeedManager {
         
         <div class="date-info">
           <strong>Fecha:</strong> ${currentDate}<br>
-          <strong>Generado por:</strong> Sistema Vivero Chaka
+          <strong>Generado por:</strong> Ing. Luis Gerardo Herrera Tuz
         </div>
         
         <table>
