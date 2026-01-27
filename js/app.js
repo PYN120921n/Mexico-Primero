@@ -3,10 +3,17 @@ class AppSystem {
   constructor() {
     this.currentModule = null;
     this.modules = {
+      // Gestión de Inventario
       semillas: window.SeedManager,
-      plantas: window.PlantManager, // Ya disponible
+      plantas: window.PlantManager,
       fertilizantes: window.FertilizerManager,
-      cotizaciones: window.QuotationManager,
+
+      // Cotizaciones Específicas
+      cotizacion_semillas: window.SeedQuotationManager,
+      cotizacion_plantas: window.PlantQuotationManager,
+      cotizacion_fertilizantes: window.FertilizerQuotationManager,
+
+      // Historial y Otros
       cotizaciones_hechas: window.QuotationHistoryManager,
       estadisticas: window.StatisticsManager,
       basedatos: window.DatabaseManager
@@ -25,7 +32,7 @@ class AppSystem {
     this.loadInitialModule();
     this.ensureNotificationContainer();
     this.setupSeedLoader();
-    this.setupPlantLoader(); // Nuevo: cargador para plantas
+    this.setupPlantLoader();
     this.setupServiceWorker();
     this.setupOfflineDetection();
     this.setupPerformanceMonitoring();
@@ -288,10 +295,17 @@ class AppSystem {
     });
 
     const titles = {
+      // Gestión de Inventario
       semillas: 'Gestión de Semillas',
       plantas: 'Gestión de Plantas',
       fertilizantes: 'Gestión de Fertilizantes',
-      cotizaciones: 'Crear Cotizaciones',
+
+      // Cotizaciones Específicas
+      cotizacion_semillas: 'Cotizar Semillas',
+      cotizacion_plantas: 'Cotizar Plantas',
+      cotizacion_fertilizantes: 'Cotizar Fertilizantes',
+
+      // Historial y Otros
       cotizaciones_hechas: 'Historial de Cotizaciones',
       estadisticas: 'Estadísticas',
       basedatos: 'Base de Datos'
@@ -385,7 +399,9 @@ class AppSystem {
       semillas: 'Semillas',
       plantas: 'Plantas',
       fertilizantes: 'Fertilizantes',
-      cotizaciones: 'Cotizaciones',
+      cotizacion_semillas: 'Cotización de Semillas',
+      cotizacion_plantas: 'Cotización de Plantas',
+      cotizacion_fertilizantes: 'Cotización de Fertilizantes',
       cotizaciones_hechas: 'Historial de Cotizaciones',
       estadisticas: 'Estadísticas',
       basedatos: 'Base de Datos'
@@ -395,7 +411,9 @@ class AppSystem {
       semillas: 'fas fa-seedling',
       plantas: 'fas fa-leaf',
       fertilizantes: 'fas fa-flask',
-      cotizaciones: 'fas fa-file-invoice-dollar',
+      cotizacion_semillas: 'fas fa-seedling',
+      cotizacion_plantas: 'fas fa-leaf',
+      cotizacion_fertilizantes: 'fas fa-flask',
       cotizaciones_hechas: 'fas fa-history',
       estadisticas: 'fas fa-chart-line',
       basedatos: 'fas fa-database'
@@ -443,8 +461,8 @@ class AppSystem {
           <button class="btn-primary" onclick="window.app.loadModule('${moduleName}')">
             <i class="fas fa-redo"></i> Reintentar
           </button>
-          <button class="btn-secondary" onclick="window.app.navigateToModule('cotizaciones')">
-            <i class="fas fa-arrow-left"></i> Volver a Cotizaciones
+          <button class="btn-secondary" onclick="window.app.navigateToModule('semillas')">
+            <i class="fas fa-arrow-left"></i> Volver a Semillas
           </button>
         </div>
         <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-light);">
@@ -475,6 +493,7 @@ class AppSystem {
             <i class="fas fa-rocket"></i> Módulos disponibles:
           </h4>
           <div class="modules-grid">
+            <!-- Gestión de Inventario -->
             <div class="module-card available" onclick="window.app.navigateToModule('semillas')">
               <div class="module-icon">
                 <i class="fas fa-seedling"></i>
@@ -495,26 +514,6 @@ class AppSystem {
                 <span class="module-status available">✅ Disponible</span>
               </div>
             </div>
-            <div class="module-card available" onclick="window.app.navigateToModule('cotizaciones')">
-              <div class="module-icon">
-                <i class="fas fa-file-invoice-dollar"></i>
-              </div>
-              <div class="module-info">
-                <h5>Cotizaciones</h5>
-                <p>Crear y gestionar</p>
-                <span class="module-status available">✅ Disponible</span>
-              </div>
-            </div>
-            <div class="module-card available" onclick="window.app.navigateToModule('cotizaciones_hechas')">
-              <div class="module-icon">
-                <i class="fas fa-history"></i>
-              </div>
-              <div class="module-info">
-                <h5>Historial</h5>
-                <p>Ver y gestionar</p>
-                <span class="module-status available">✅ Disponible</span>
-              </div>
-            </div>
             <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
               <div class="module-icon">
                 <i class="fas fa-flask"></i>
@@ -523,6 +522,50 @@ class AppSystem {
                 <h5>Fertilizantes</h5>
                 <p>Gestión de insumos</p>
                 <span class="module-status developing">🔧 En desarrollo</span>
+              </div>
+            </div>
+            
+            <!-- Cotizaciones Específicas -->
+            <div class="module-card available" onclick="window.app.navigateToModule('cotizacion_semillas')">
+              <div class="module-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+              </div>
+              <div class="module-info">
+                <h5>Cot. Semillas</h5>
+                <p>Crear cotizaciones</p>
+                <span class="module-status available">✅ Disponible</span>
+              </div>
+            </div>
+            <div class="module-card available" onclick="window.app.navigateToModule('cotizacion_plantas')">
+              <div class="module-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+              </div>
+              <div class="module-info">
+                <h5>Cot. Plantas</h5>
+                <p>Crear cotizaciones</p>
+                <span class="module-status available">✅ Disponible</span>
+              </div>
+            </div>
+            <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
+              <div class="module-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+              </div>
+              <div class="module-info">
+                <h5>Cot. Fertilizantes</h5>
+                <p>Crear cotizaciones</p>
+                <span class="module-status developing">🔧 En desarrollo</span>
+              </div>
+            </div>
+            
+            <!-- Historial y Otros -->
+            <div class="module-card available" onclick="window.app.navigateToModule('cotizaciones_hechas')">
+              <div class="module-icon">
+                <i class="fas fa-history"></i>
+              </div>
+              <div class="module-info">
+                <h5>Historial</h5>
+                <p>Ver todas las cotizaciones</p>
+                <span class="module-status available">✅ Disponible</span>
               </div>
             </div>
             <div class="module-card developing" onclick="window.app.showNotification('Módulo en desarrollo', 'info')">
@@ -567,7 +610,7 @@ class AppSystem {
               <div style="color: var(--text-light);">Plantas</div>
             </div>
             <div>
-              <div style="font-weight: bold; color: var(--primary-color);">${JSON.parse(localStorage.getItem('cotizaciones') || '[]').length}</div>
+              <div style="font-weight: bold; color: var(--primary-color);">${JSON.parse(localStorage.getItem('mexicoprimero_cotizaciones') || '[]').length}</div>
               <div style="color: var(--text-light);">Cotizaciones</div>
             </div>
           </div>
