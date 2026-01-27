@@ -1132,7 +1132,7 @@ class PlantManager {
     this.bindEvents();
     this.loadPlants(false);
     this.updateStats();
-    
+
     // Cargar la vista guardada del usuario
     this.switchView(this.currentView, true);
   }
@@ -1386,7 +1386,7 @@ class PlantManager {
     plantsToShow.forEach(plant => {
       const createdAt = new Date(plant.createdAt);
       const updatedAt = new Date(plant.updatedAt);
-      
+
       const card = document.createElement('div');
       card.className = 'plant-card';
       card.innerHTML = `
@@ -1488,7 +1488,7 @@ class PlantManager {
     plantsToShow.forEach(plant => {
       const createdAt = new Date(plant.createdAt);
       const updatedAt = new Date(plant.updatedAt);
-      
+
       const row = document.createElement('tr');
       row.innerHTML = `
         <td><strong class="text-primary">${plant.id}</strong></td>
@@ -1530,7 +1530,7 @@ class PlantManager {
   updateStats() {
     const totalPlants = this.plants.length;
     const uniqueSpecies = new Set(this.plants.map(p => p.scientificName?.toLowerCase()).filter(Boolean)).size;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const updatedToday = this.plants.filter(p => {
@@ -1552,7 +1552,7 @@ class PlantManager {
   updateVisibleStats() {
     const visiblePlants = this.filteredPlants.length;
     const visibleSpecies = new Set(this.filteredPlants.map(p => p.scientificName?.toLowerCase()).filter(Boolean)).size;
-    
+
     let lastUpdate = '-';
     if (this.filteredPlants.length > 0) {
       const latest = this.filteredPlants.reduce((latest, plant) => {
@@ -2078,10 +2078,10 @@ class PlantManager {
           </thead>
           <tbody>
             ${this.plants.map(plant => {
-              const createdAt = new Date(plant.createdAt);
-              const updatedAt = new Date(plant.updatedAt);
-              
-              return `
+      const createdAt = new Date(plant.createdAt);
+      const updatedAt = new Date(plant.updatedAt);
+
+      return `
                 <tr>
                   <td><strong>${plant.id}</strong></td>
                   <td>${plant.commonName || ''}</td>
@@ -2090,7 +2090,7 @@ class PlantManager {
                   <td>${updatedAt.toLocaleDateString('es-MX')}</td>
                 </tr>
               `;
-            }).join('')}
+    }).join('')}
             <tr class="summary-row">
               <td colspan="5"><strong>TOTAL PLANTAS: ${this.plants.length}</strong></td>
             </tr>
