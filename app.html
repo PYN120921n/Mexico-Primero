@@ -524,269 +524,292 @@
           }
       }
   </style>
-</head>
-<body>
-<div class="app-container">
-  <!-- Header -->
-  <header class="app-header">
-    <div class="header-left">
-      <div class="logo">
-        <img src="logo.png" alt="Vivero Chaka"
-             style="height: 45px; width: 45px; object-fit: contain; border-radius: 8px;"
-             onerror="this.onerror=null; this.src='logo.jpg'; this.alt='Logo Vivero Chaka'">
-        <h2>Vivero <span>Chaka</span></h2>
-      </div>
-      <h1 id="pageTitle">Sistema de Gestión Integral</h1>
-    </div>
-    <div class="header-right">
-      <div class="user-info">
-        <div class="user-avatar">
-          <i class="fas fa-user"></i>
+  </head>
+  <body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">
+          <img src="logo.png" alt="Vivero Chaka"
+               style="height: 45px; width: 45px; object-fit: contain; border-radius: 8px;"
+               onerror="this.onerror=null; this.src='logo.jpg'; this.alt='Logo Vivero Chaka'">
+          <h2>Vivero <span>Chaka</span></h2>
         </div>
-        <div class="user-details">
-          <h3 id="userName">Usuario</h3>
-          <p id="userRole">Administrador</p>
+        <h1 id="pageTitle">Sistema de Gestión Integral</h1>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <div class="user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="user-details">
+            <h3 id="userName">Usuario</h3>
+            <p id="userRole">Administrador</p>
+          </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn" data-tooltip="Cerrar sesión">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation - ACTUALIZADO PARA 9 MÓDULOS -->
+    <nav class="app-nav">
+      <ul>
+        <!-- Gestión de Inventario -->
+        <li class="nav-item" data-module="semillas">
+          <a href="#semillas">
+            <i class="fas fa-seedling"></i>
+            <span>Semillas</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="plantas">
+          <a href="#plantas">
+            <i class="fas fa-leaf"></i>
+            <span>Plantas</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="fertilizantes">
+          <a href="#fertilizantes">
+            <i class="fas fa-flask"></i>
+            <span>Fertilizantes</span>
+            <span class="badge dev">Dev</span>
+          </a>
+        </li>
+
+        <!-- Cotizaciones Específicas -->
+        <li class="nav-item" data-module="cotizacion_semillas">
+          <a href="#cotizacion_semillas">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Cot. Semillas</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="cotizacion_plantas">
+          <a href="#cotizacion_plantas">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Cot. Plantas</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="cotizacion_fertilizantes">
+          <a href="#cotizacion_fertilizantes">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Cot. Fertilizantes</span>
+            <span class="badge dev">Dev</span>
+          </a>
+        </li>
+
+        <!-- Historial y Otros -->
+        <li class="nav-item" data-module="cotizaciones_hechas">
+          <a href="#cotizaciones_hechas">
+            <i class="fas fa-history"></i>
+            <span>Historial</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="estadisticas">
+          <a href="#estadisticas">
+            <i class="fas fa-chart-line"></i>
+            <span>Estadísticas</span>
+            <span class="badge dev">Dev</span>
+          </a>
+        </li>
+        <li class="nav-item" data-module="basedatos">
+          <a href="#basedatos">
+            <i class="fas fa-database"></i>
+            <span>Base de Datos</span>
+            <span class="badge dev">Dev</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div id="mainContent">
+        <!-- El contenido se cargará dinámicamente aquí -->
+        <div class="loading-overlay" id="initialLoading" style="display: none;">
+          <div class="loading-spinner"></div>
+          <p>Cargando sistema...</p>
         </div>
       </div>
-      <button class="logout-btn" id="logoutBtn" data-tooltip="Cerrar sesión">
-        <i class="fas fa-sign-out-alt"></i>
-      </button>
-    </div>
-  </header>
+    </main>
 
-  <!-- Navigation -->
-  <nav class="app-nav">
-    <ul>
-      <li class="nav-item" data-module="semillas">
-        <a href="#semillas">
-          <i class="fas fa-seedling"></i>
-          <span>Semillas</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="plantas">
-        <a href="#plantas">
-          <i class="fas fa-leaf"></i>
-          <span>Plantas</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="fertilizantes">
-        <a href="#fertilizantes">
-          <i class="fas fa-flask"></i>
-          <span>Fertilizantes</span>
-          <span class="badge dev">Dev</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="cotizaciones">
-        <a href="#cotizaciones">
-          <i class="fas fa-file-invoice-dollar"></i>
-          <span>Cotizaciones</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="cotizaciones_hechas">
-        <a href="#cotizaciones_hechas">
-          <i class="fas fa-history"></i>
-          <span>Historial</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="estadisticas">
-        <a href="#estadisticas">
-          <i class="fas fa-chart-line"></i>
-          <span>Estadísticas</span>
-          <span class="badge dev">Dev</span>
-        </a>
-      </li>
-      <li class="nav-item" data-module="basedatos">
-        <a href="#basedatos">
-          <i class="fas fa-database"></i>
-          <span>Base de Datos</span>
-          <span class="badge dev">Dev</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="app-main">
-    <div id="mainContent">
-      <!-- El contenido se cargará dinámicamente aquí -->
-      <div class="loading-overlay" id="initialLoading" style="display: none;">
-        <div class="loading-spinner"></div>
-        <p>Cargando sistema...</p>
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="app-footer">
-    <p>© 2026 Vivero Chaka. Sistema de Gestión Integral v2.0.0</p>
-    <p style="font-size: 0.85rem; margin-top: 5px; opacity: 0.8;">
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>© 2026 Vivero Chaka. Sistema de Gestión Integral v2.0.0</p>
+      <p style="font-size: 0.85rem; margin-top: 5px; opacity: 0.8;">
       <span id="connectionStatus" class="badge success">
         <i class="fas fa-wifi"></i> Conectado
       </span>
-      <span style="margin: 0 10px;">|</span>
-      Última actualización: <span id="lastUpdate"></span>
-    </p>
-  </footer>
-</div>
+        <span style="margin: 0 10px;">|</span>
+        Última actualización: <span id="lastUpdate"></span>
+      </p>
+    </footer>
+  </div>
 
-<!-- Botones flotantes para acciones rápidas -->
-<div class="floating-actions no-print">
-  <button class="floating-btn quick-search" id="quickSearchBtn" data-tooltip="Búsqueda rápida">
-    <i class="fas fa-search"></i>
-  </button>
-  <button class="floating-btn quick-add" id="quickAddBtn" data-tooltip="Agregar rápido">
-    <i class="fas fa-plus"></i>
-  </button>
-  <button class="floating-btn quick-print" id="quickPrintBtn" data-tooltip="Imprimir rápido">
-    <i class="fas fa-print"></i>
-  </button>
-</div>
+  <!-- Botones flotantes para acciones rápidas -->
+  <div class="floating-actions no-print">
+    <button class="floating-btn quick-search" id="quickSearchBtn" data-tooltip="Búsqueda rápida">
+      <i class="fas fa-search"></i>
+    </button>
+    <button class="floating-btn quick-add" id="quickAddBtn" data-tooltip="Agregar rápido">
+      <i class="fas fa-plus"></i>
+    </button>
+    <button class="floating-btn quick-print" id="quickPrintBtn" data-tooltip="Imprimir rápido">
+      <i class="fas fa-print"></i>
+    </button>
+  </div>
 
-<!-- Notification Container -->
-<div id="notificationContainer"></div>
+  <!-- Notification Container -->
+  <div id="notificationContainer"></div>
 
-<!-- Global Search Modal -->
-<div id="globalSearchModal" class="modal" style="display: none;">
-  <div class="modal-content" style="max-width: 600px;">
-    <div class="modal-header">
-      <h3><i class="fas fa-search"></i> Búsqueda Global</h3>
-      <button class="modal-close">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <input type="text" id="globalSearchInput" placeholder="Buscar en todo el sistema..." autocomplete="off" style="padding: 15px; font-size: 1.1rem;">
+  <!-- Global Search Modal -->
+  <div id="globalSearchModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-search"></i> Búsqueda Global</h3>
+        <button class="modal-close">&times;</button>
       </div>
-      <div id="globalSearchResults" style="margin-top: 20px; max-height: 400px; overflow-y: auto;"></div>
+      <div class="modal-body">
+        <div class="form-group">
+          <input type="text" id="globalSearchInput" placeholder="Buscar en todo el sistema..." autocomplete="off" style="padding: 15px; font-size: 1.1rem;">
+        </div>
+        <div id="globalSearchResults" style="margin-top: 20px; max-height: 400px; overflow-y: auto;"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Scripts - ORDEN CORRECTO -->
+  <!-- Scripts - ORDEN CORRECTO PARA 9 MÓDULOS -->
+  <script src="js/plantas.js"></script>
+  <script src="js/semillas.js"></script>
 
-<script src="js/plantas.js"></script>
-<script src="js/semillas.js"></script>
-<script src="js/cotizaciones.js"></script>
-<script src="js/cotizaciones_hechas.js"></script>
-<script src="js/app.js"></script>
+  <!-- Módulos de cotización específicos (crear estos archivos luego) -->
+  <script src="js/cotizaciones_semillas.js"></script>
+  <script src="js/cotizaciones_plantas.js"></script>
+  <script src="js/cotizaciones_fertilizantes.js"></script>
 
-<script>
-  // Script para botones flotantes y funcionalidades globales
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Sistema Vivero Chaka inicializado');
+  <script src="js/cotizaciones_hechas.js"></script>
+  <script src="js/app.js"></script>
 
-    // Configurar fecha de última actualización
-    const lastUpdate = document.getElementById('lastUpdate');
-    if (lastUpdate) {
-      lastUpdate.textContent = new Date().toLocaleDateString('es-ES', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
+  <script>
+    // Script para botones flotantes y funcionalidades globales
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 Sistema Vivero Chaka inicializado - 9 Módulos');
 
-    // Configurar botones flotantes
-    const quickAddBtn = document.getElementById('quickAddBtn');
-    const quickPrintBtn = document.getElementById('quickPrintBtn');
-    const quickSearchBtn = document.getElementById('quickSearchBtn');
-    const globalSearchModal = document.getElementById('globalSearchModal');
-    const globalSearchInput = document.getElementById('globalSearchInput');
-    const globalSearchResults = document.getElementById('globalSearchResults');
+      // Configurar fecha de última actualización
+      const lastUpdate = document.getElementById('lastUpdate');
+      if (lastUpdate) {
+        lastUpdate.textContent = new Date().toLocaleDateString('es-ES', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
 
-    // Botón de búsqueda global
-    if (quickSearchBtn && globalSearchModal) {
-      quickSearchBtn.addEventListener('click', function() {
-        globalSearchModal.style.display = 'flex';
-        setTimeout(() => globalSearchModal.classList.add('show'), 10);
-        setTimeout(() => globalSearchInput.focus(), 50);
-      });
+      // Configurar botones flotantes
+      const quickAddBtn = document.getElementById('quickAddBtn');
+      const quickPrintBtn = document.getElementById('quickPrintBtn');
+      const quickSearchBtn = document.getElementById('quickSearchBtn');
+      const globalSearchModal = document.getElementById('globalSearchModal');
+      const globalSearchInput = document.getElementById('globalSearchInput');
+      const globalSearchResults = document.getElementById('globalSearchResults');
 
-      // Cerrar modal
-      globalSearchModal.querySelector('.modal-close').addEventListener('click', function() {
-        closeGlobalSearch();
-      });
+      // Botón de búsqueda global
+      if (quickSearchBtn && globalSearchModal) {
+        quickSearchBtn.addEventListener('click', function() {
+          globalSearchModal.style.display = 'flex';
+          setTimeout(() => globalSearchModal.classList.add('show'), 10);
+          setTimeout(() => globalSearchInput.focus(), 50);
+        });
 
-      globalSearchModal.addEventListener('click', function(e) {
-        if (e.target === globalSearchModal) {
+        // Cerrar modal
+        globalSearchModal.querySelector('.modal-close').addEventListener('click', function() {
           closeGlobalSearch();
-        }
-      });
+        });
 
-      // Búsqueda en tiempo real
-      let searchTimeout;
-      globalSearchInput.addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-          performGlobalSearch(e.target.value);
+        globalSearchModal.addEventListener('click', function(e) {
+          if (e.target === globalSearchModal) {
+            closeGlobalSearch();
+          }
+        });
+
+        // Búsqueda en tiempo real
+        let searchTimeout;
+        globalSearchInput.addEventListener('input', function(e) {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            performGlobalSearch(e.target.value);
+          }, 300);
+        });
+
+        // Atajo de teclado: Ctrl+K para búsqueda global
+        document.addEventListener('keydown', function(e) {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            quickSearchBtn.click();
+          }
+          if (e.key === 'Escape' && globalSearchModal.style.display === 'flex') {
+            closeGlobalSearch();
+          }
+        });
+      }
+
+      function closeGlobalSearch() {
+        globalSearchModal.classList.remove('show');
+        setTimeout(() => {
+          globalSearchModal.style.display = 'none';
+          globalSearchInput.value = '';
+          globalSearchResults.innerHTML = '';
         }, 300);
-      });
+      }
 
-      // Atajo de teclado: Ctrl+K para búsqueda global
-      document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-          e.preventDefault();
-          quickSearchBtn.click();
-        }
-        if (e.key === 'Escape' && globalSearchModal.style.display === 'flex') {
-          closeGlobalSearch();
-        }
-      });
-    }
-
-    function closeGlobalSearch() {
-      globalSearchModal.classList.remove('show');
-      setTimeout(() => {
-        globalSearchModal.style.display = 'none';
-        globalSearchInput.value = '';
-        globalSearchResults.innerHTML = '';
-      }, 300);
-    }
-
-    async function performGlobalSearch(query) {
-      if (!query || query.length < 2) {
-        globalSearchResults.innerHTML = `
+      async function performGlobalSearch(query) {
+        if (!query || query.length < 2) {
+          globalSearchResults.innerHTML = `
           <div class="empty-state">
             <i class="fas fa-search"></i>
             <p>Escribe al menos 2 caracteres para buscar</p>
           </div>
         `;
-        return;
-      }
+          return;
+        }
 
-      globalSearchResults.innerHTML = `
+        globalSearchResults.innerHTML = `
         <div style="text-align: center; padding: 30px;">
           <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--primary-color);"></i>
           <p style="margin-top: 10px; color: var(--text-light);">Buscando...</p>
         </div>
       `;
 
-      // Simular búsqueda (en producción esto sería una llamada a API)
-      setTimeout(() => {
-        const results = [
-          { type: 'semilla', name: 'Cedro rojo', module: 'semillas', id: 1 },
-          { type: 'cotizacion', name: 'Cotización MP-123', module: 'cotizaciones_hechas', id: 'MP-123' },
-          { type: 'cliente', name: 'Agricultura S.A.', module: 'cotizaciones', id: null }
-        ];
+        // Simular búsqueda
+        setTimeout(() => {
+          const results = [
+            { type: 'semilla', name: 'Cedro rojo', module: 'semillas', id: 1 },
+            { type: 'planta', name: 'Rosa China', module: 'plantas', id: 1 },
+            { type: 'cotizacion', name: 'Cotización S-001', module: 'cotizacion_semillas', id: 'S-001' },
+            { type: 'cotizacion', name: 'Cotización P-001', module: 'cotizacion_plantas', id: 'P-001' }
+          ];
 
-        if (results.length === 0) {
-          globalSearchResults.innerHTML = `
+          if (results.length === 0) {
+            globalSearchResults.innerHTML = `
             <div class="empty-state">
               <i class="fas fa-search"></i>
               <p>No se encontraron resultados para "${query}"</p>
             </div>
           `;
-          return;
-        }
+            return;
+          }
 
-        const resultsHTML = results.map(result => `
+          const resultsHTML = results.map(result => `
           <div class="search-result-item" data-module="${result.module}" data-id="${result.id}">
             <div class="result-icon">
-              <i class="fas fa-${result.type === 'semilla' ? 'seedling' : result.type === 'cotizacion' ? 'file-invoice-dollar' : 'user'}"></i>
+              <i class="fas fa-${result.type === 'semilla' ? 'seedling' : result.type === 'planta' ? 'leaf' : result.type === 'cotizacion' ? 'file-invoice-dollar' : 'user'}"></i>
             </div>
             <div class="result-content">
               <h4>${result.name}</h4>
-              <p>${result.type === 'semilla' ? 'Semilla' : result.type === 'cotizacion' ? 'Cotización' : 'Cliente'}</p>
+              <p>${result.type === 'semilla' ? 'Semilla' : result.type === 'planta' ? 'Planta' : result.type === 'cotizacion' ? 'Cotización' : 'Cliente'}</p>
             </div>
             <div class="result-action">
               <i class="fas fa-arrow-right"></i>
@@ -794,155 +817,147 @@
           </div>
         `).join('');
 
-        globalSearchResults.innerHTML = resultsHTML;
+          globalSearchResults.innerHTML = resultsHTML;
 
-        // Agregar eventos a los resultados
-        globalSearchResults.querySelectorAll('.search-result-item').forEach(item => {
-          item.addEventListener('click', function() {
-            const module = this.getAttribute('data-module');
-            const id = this.getAttribute('data-id');
-            closeGlobalSearch();
+          // Agregar eventos a los resultados
+          globalSearchResults.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+              const module = this.getAttribute('data-module');
+              const id = this.getAttribute('data-id');
+              closeGlobalSearch();
 
-            // Navegar al módulo correspondiente
-            if (window.app && window.app.navigateToModule) {
-              window.app.navigateToModule(module);
-
-              // Si hay un ID específico, mostrar detalles después de cargar
-              setTimeout(() => {
-                if (id && window.app.currentModule) {
-                  if (module === 'semillas' && window.app.currentModule.openSeedModal) {
-                    window.app.currentModule.openSeedModal(id);
-                  } else if (module === 'cotizaciones_hechas' && window.app.currentModule.viewQuotation) {
-                    // Buscar la cotización por ID
-                    const quotations = JSON.parse(localStorage.getItem('mexicoprimero_cotizaciones') || '[]');
-                    const quote = quotations.find(q => q.id === id);
-                    if (quote) {
-                      window.app.currentModule.viewQuotation(quote);
-                    }
-                  }
-                }
-              }, 500);
-            }
+              // Navegar al módulo correspondiente
+              if (window.app && window.app.navigateToModule) {
+                window.app.navigateToModule(module);
+              }
+            });
           });
+        }, 500);
+      }
+
+      // Botón de agregar rápido
+      if (quickAddBtn) {
+        quickAddBtn.addEventListener('click', function() {
+          const currentModule = window.location.hash.substring(1) || 'semillas';
+
+          if (window.app && window.app.currentModule) {
+            switch(currentModule) {
+              case 'semillas':
+                if (window.app.currentModule.openSeedModal) {
+                  window.app.currentModule.openSeedModal();
+                }
+                break;
+              case 'plantas':
+                if (window.app.currentModule.openPlantModal) {
+                  window.app.currentModule.openPlantModal();
+                }
+                break;
+              case 'cotizacion_semillas':
+              case 'cotizacion_plantas':
+              case 'cotizacion_fertilizantes':
+                // Abrir formulario de nueva cotización específica
+                if (window.app.currentModule.openNewQuoteForm) {
+                  window.app.currentModule.openNewQuoteForm();
+                }
+                break;
+              case 'cotizaciones_hechas':
+                // Verificar qué tipo de cotización crear basado en historial
+                window.app.showNotification('Selecciona el tipo de cotización desde el menú', 'info');
+                break;
+              default:
+                window.app.showNotification('Acción no disponible en este módulo', 'info');
+            }
+          }
         });
-      }, 500);
-    }
+      }
 
-    // Botón de agregar rápido
-    if (quickAddBtn) {
-      quickAddBtn.addEventListener('click', function() {
-        const currentModule = window.location.hash.substring(1) || 'semillas';
+      // Botón de imprimir rápido
+      if (quickPrintBtn) {
+        quickPrintBtn.addEventListener('click', function() {
+          const currentModule = window.location.hash.substring(1);
 
-        if (window.app && window.app.currentModule) {
-          switch(currentModule) {
-            case 'semillas':
-              if (window.app.currentModule.openSeedModal) {
-                window.app.currentModule.openSeedModal();
-              }
-              break;
-            case 'cotizaciones':
-              if (window.app.currentModule.openProductsModal) {
-                window.app.currentModule.openProductsModal();
-              }
-              break;
-            case 'cotizaciones_hechas':
-              // Crear nueva cotización desde historial
-              window.app.navigateToModule('cotizaciones');
-              break;
-            default:
-              window.app.showNotification('Acción no disponible en este módulo', 'info');
+          if (window.app && window.app.currentModule) {
+            switch(currentModule) {
+              case 'cotizacion_semillas':
+              case 'cotizacion_plantas':
+              case 'cotizacion_fertilizantes':
+                const previewBtn = document.getElementById('previewQuoteBtn');
+                if (previewBtn) {
+                  previewBtn.click();
+                } else {
+                  window.app.showNotification('Completa la cotización primero', 'info');
+                }
+                break;
+              case 'cotizaciones_hechas':
+                window.app.showNotification('Selecciona una cotización para imprimir', 'info');
+                break;
+              case 'semillas':
+                // Imprimir inventario de semillas
+                window.app.showNotification('Exportando inventario de semillas...', 'info');
+                break;
+              case 'plantas':
+                // Imprimir inventario de plantas
+                window.app.showNotification('Exportando inventario de plantas...', 'info');
+                break;
+              default:
+                window.app.showNotification('Impresión no disponible en este módulo', 'info');
+            }
+          }
+        });
+      }
+
+      // Monitorear conexión
+      function updateConnectionStatus() {
+        const statusElement = document.getElementById('connectionStatus');
+        if (statusElement) {
+          const isOnline = navigator.onLine;
+          if (isOnline) {
+            statusElement.className = 'badge success';
+            statusElement.innerHTML = '<i class="fas fa-wifi"></i> Conectado';
+          } else {
+            statusElement.className = 'badge warning';
+            statusElement.innerHTML = '<i class="fas fa-wifi-slash"></i> Sin conexión';
+          }
+        }
+      }
+
+      window.addEventListener('online', updateConnectionStatus);
+      window.addEventListener('offline', updateConnectionStatus);
+      updateConnectionStatus();
+
+      // Atajos de teclado globales
+      document.addEventListener('keydown', function(e) {
+        // Ctrl+S para guardar
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          const saveBtn = document.getElementById('saveQuoteBtn') ||
+            document.getElementById('modalSave') ||
+            document.getElementById('saveSeedBtn') ||
+            document.getElementById('savePlantBtn');
+          if (saveBtn && !saveBtn.disabled) {
+            saveBtn.click();
+          }
+        }
+
+        // Ctrl+P para imprimir
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+          e.preventDefault();
+          quickPrintBtn.click();
+        }
+
+        // Escape para cerrar modales
+        if (e.key === 'Escape') {
+          const openModal = document.querySelector('.modal.show');
+          if (openModal) {
+            const closeBtn = openModal.querySelector('.modal-close');
+            if (closeBtn) closeBtn.click();
           }
         }
       });
-    }
 
-    // Botón de imprimir rápido
-    if (quickPrintBtn) {
-      quickPrintBtn.addEventListener('click', function() {
-        const currentModule = window.location.hash.substring(1);
-
-        if (window.app && window.app.currentModule) {
-          switch(currentModule) {
-            case 'cotizaciones':
-              const previewBtn = document.getElementById('previewPrintBtn');
-              if (previewBtn) {
-                previewBtn.click();
-              } else {
-                window.app.showNotification('Completa la cotización primero', 'info');
-              }
-              break;
-            case 'cotizaciones_hechas':
-              window.app.showNotification('Selecciona una cotización para imprimir', 'info');
-              break;
-            case 'semillas':
-              // Imprimir inventario de semillas
-              const printBtn = document.getElementById('exportSeedsBtn');
-              if (printBtn) {
-                window.app.showNotification('Exportando inventario...', 'info');
-                // Simular exportación
-                setTimeout(() => {
-                  window.app.showNotification('Inventario listo para imprimir', 'success');
-                }, 1000);
-              }
-              break;
-            default:
-              window.app.showNotification('Impresión no disponible en este módulo', 'info');
-          }
-        }
-      });
-    }
-
-    // Monitorear conexión
-    function updateConnectionStatus() {
-      const statusElement = document.getElementById('connectionStatus');
-      if (statusElement) {
-        const isOnline = navigator.onLine;
-        if (isOnline) {
-          statusElement.className = 'badge success';
-          statusElement.innerHTML = '<i class="fas fa-wifi"></i> Conectado';
-        } else {
-          statusElement.className = 'badge warning';
-          statusElement.innerHTML = '<i class="fas fa-wifi-slash"></i> Sin conexión';
-        }
-      }
-    }
-
-    window.addEventListener('online', updateConnectionStatus);
-    window.addEventListener('offline', updateConnectionStatus);
-    updateConnectionStatus();
-
-    // Atajos de teclado globales
-    document.addEventListener('keydown', function(e) {
-      // Ctrl+S para guardar
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        const saveBtn = document.getElementById('saveQuoteBtn') ||
-          document.getElementById('modalSave') ||
-          document.getElementById('saveSeedBtn');
-        if (saveBtn && !saveBtn.disabled) {
-          saveBtn.click();
-        }
-      }
-
-      // Ctrl+P para imprimir
-      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
-        e.preventDefault();
-        quickPrintBtn.click();
-      }
-
-      // Escape para cerrar modales
-      if (e.key === 'Escape') {
-        const openModal = document.querySelector('.modal.show');
-        if (openModal) {
-          const closeBtn = openModal.querySelector('.modal-close');
-          if (closeBtn) closeBtn.click();
-        }
-      }
-    });
-
-    // Estilos para resultados de búsqueda
-    const style = document.createElement('style');
-    style.textContent = `
+      // Estilos para resultados de búsqueda
+      const style = document.createElement('style');
+      style.textContent = `
       .search-result-item {
         display: flex;
         align-items: center;
@@ -1005,9 +1020,8 @@
         color: var(--primary-color);
       }
     `;
-    document.head.appendChild(style);
-  });
-</script>
-</body>
-</html>
-
+      document.head.appendChild(style);
+    });
+  </script>
+  </body>
+  </html>
